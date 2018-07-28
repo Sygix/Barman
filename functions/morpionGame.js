@@ -1,10 +1,11 @@
-module.exports = function morpionGame(msg, player){
+module.exports = function morpionGame(msg, playerUser){
 
     const channel = msg.channel;
-
+    var messageEDIT;
+    var messageTurn;
     var _boardSize = 3
         , _boardData = {}
-        , _playerMarks = ['x', 'o']
+        , _playerMarks = [':x:', ':o:']
         , _players = [];
 
     /**
@@ -100,22 +101,29 @@ module.exports = function morpionGame(msg, player){
      * @private
      */
     function _getInput(callback) {
-        msg.channel.send(player.displayName + ' ' +  _players[0].marker + '\'s move (enter row column from 0 to 2): ');
 
-        //
-        const collector = new Discord.MessageCollector(msg.channel, m => m.author.id === player.id, { time: 30000, errors: ['time'] });
+        if (typeof messageTurn === 'undefined') {
+            msg.channel.send('C\'est le tour de ' + playerUser.displayName + ' ' +  _players[0].marker + ' (entre le numéro de ligne puis de colonne de 0 à 2).')
+                .then(message => messageTurn = message);
+        }
+
+        const collector = new Discord.MessageCollector(msg.channel, m => m.author.id === playerUser.id, { time: 60000, errors: ['time'] });
         collector.on('collect', message => {
             if (_boardData.empty.indexOf(message.content) != -1) {
                 callback(_posFromString(message.content));
+                message.delete(2000);
+                messageTurn.delete();
+                messageTurn = undefined;
                 collector.stop('success');
             } else {
                 _getInput(callback);
+                message.delete(2000);
                 collector.stop('success/callback');
             }
         });
         collector.on('end', reason => {
-            if(reason === 'time'){
-                msg.channel.send("La requète à expiré ! (30 secondes)");
+            if(reason == 'time'){
+                msg.channel.send("La requète à expiré ! (60 secondes)");
             }
         });
     }
@@ -180,24 +188,23 @@ module.exports = function morpionGame(msg, player){
      * @private
      */
     function _printBoard() {
-        var divider = "+-----------+";
-        var text = "```";
-
+        var text = "";
         for (var i = 0; i < 3; i += 1) {
-            text += divider+"\n";
-            var row = "|";
+            var row = "";
 
             for (var k = 0; k < 3; k += 1) {
-                if (_boardData.board[i][k])
-                    row += " " + _boardData.board[i][k] + " |";
-                else
-                    row += "   |";
+                if (_boardData.board[i][k]) row += _boardData.board[i][k];
+                else row += ":white_large_square:";
             }
 
            text += row+"\n";
         }
-        text += divider+"```";
-        msg.channel.send(text);
+        if (typeof messageEDIT === 'undefined') {
+            msg.channel.send(text)
+                .then(message => messageEDIT = message);
+        }else{
+            messageEDIT.edit(text);
+        }
     }
 
     /**
@@ -251,7 +258,7 @@ module.exports = function morpionGame(msg, player){
         }
 
         if (winner) {
-            msg.channel.send(winner.marker + ' wins!');
+            msg.channel.send(winner.marker + ' a gagné !');
             return true;
         }
 
@@ -270,8 +277,8 @@ module.exports = function morpionGame(msg, player){
             _buildBoard();
             _setupPlayers(playerTypes);
 
-            if (_players[0].marker != 'x') {
-                // Rotate the players so that 'x' goes first
+            if (_players[0].marker != ':x:') {
+                // Rotate the players so that ':x:' goes first
                 _rotatePlayers();
             }
 

@@ -16,7 +16,7 @@ module.exports = class commands{
                 "  - @Barman maths (calcul)\n" +
                 "  - @Barman ia (message)\n" +
                 "  - @Barman voice (0-99) [public / @user @user]\n" +
-                "  - @Barman morpion (ia / human)\n" +
+                "  - @Barman morpion [@user]\n" +
                 "  - SOON @Barman loupgarou\n" +
                 //"  - SOON @Barman r6s (pseudo) [uplay, xone, ps4] [op/saison]\n" +
                 "  - @Barman clear (2-100)\n" +
@@ -124,10 +124,10 @@ module.exports = class commands{
         }
         if(msg.toString().startsWith(botMention + 'morpion')){
             let msgArray = msg.toString().split(" ");
-            if(msgArray[2] === 'ia'){
+            if(msgArray.length < 3){
                 var morpion = new morpionGame(msg, msg.member);
                 morpion.start(['human', 'ai']);
-            }else if(msgArray[2] === 'human'){
+            }else{
                 msg.channel.send('Cette partie est encore en développement, patience !');
             }
         }
