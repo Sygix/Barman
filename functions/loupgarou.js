@@ -5,7 +5,7 @@ module.exports = class loupgarou{
         const message = msg;
 
         message.channel.send("Test or Change?");
-        const collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, {time: 15000});
+        const collector = new Discord.MessageCollector(message.channel, m => m.author.id === message.author.id, { time: 15000, errors: ['time'] });
         console.log(collector);
         collector.on('collect', message => {
             if (message.content == "Test") {
@@ -22,7 +22,7 @@ module.exports = class loupgarou{
         collector.on('end', reason => {
             if(reason == 'user'){
 
-            }else if(reason === null){
+            }else if(reason === 'time'){
                 message.channel.send("La requète à expiré ! (15 secondes)");
             }
         });

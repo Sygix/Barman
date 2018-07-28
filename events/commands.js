@@ -4,6 +4,7 @@ const r6sStats = require('../functions/r6sStats');
 const createEmbed = require('../functions/createEmbed');
 const createTVC = require('../functions/createTempVoiceChannel');
 const loupGarou = require('../functions/loupgarou');
+const morpionGame = require('../functions/morpionGame');
 const R6 = new r6sStats();
 module.exports = class commands{
 
@@ -15,6 +16,7 @@ module.exports = class commands{
                 "  - @Barman maths (calcul)\n" +
                 "  - @Barman ia (message)\n" +
                 "  - @Barman voice (0-99) [public / @user @user]\n" +
+                "  - @Barman morpion (ia / human)\n" +
                 "  - SOON @Barman loupgarou\n" +
                 //"  - SOON @Barman r6s (pseudo) [uplay, xone, ps4] [op/saison]\n" +
                 "  - @Barman clear (2-100)\n" +
@@ -98,11 +100,11 @@ module.exports = class commands{
             // This command removes all messages from all users in the channel, up to 500.
             // get the delete count, as an actual number.
             let msgArray = msg.toString().split(" ");
-            const deleteCount = parseInt(msgArray[2], 10);
+            const deleteCount = parseInt(msgArray[2], 10)+1;
 
             // Ooooh nice, combined conditions. <3
             if(!deleteCount || deleteCount < 2 || deleteCount > 100)
-                return msg.reply("Merci de donner un nombre de messages à supprimer entre 2 et 100 compris.");
+                return msg.reply("Merci de donner un nombre de messages à supprimer entre 1 et 99 compris.");
 
             // So we get our messages, and delete them. Simple enough, right?
             const fetched = await msg.channel.fetchMessages({limit: deleteCount});
@@ -114,6 +116,15 @@ module.exports = class commands{
                         });
                 })
                 .catch(error => msg.reply(`Je n'ai pas réussi à supprimer les messages : ${error}`));
+        }
+        if(msg.toString().startsWith(botMention + 'morpion')){
+            let msgArray = msg.toString().split(" ");
+            if(msgArray[2] === 'ia'){
+                var morpion = new morpionGame(msg, msg.member);
+                morpion.start(['human', 'ai']);
+            }else if(msgArray[2] === 'human'){
+                msg.channel.send('Cette partie est encore en développement, patience !');
+            }
         }
     }
 
