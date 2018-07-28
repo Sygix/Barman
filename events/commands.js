@@ -46,8 +46,8 @@ module.exports = class commands{
             cleverBotCalls.askBot(text, msg);
         }
         if(msg.toString().startsWith(botMention + 'loupgarou')){
-            loupGarou.callLoupGarou(msg);
-            //msg.channel.send("Commande en développement");
+            //loupGarou.callLoupGarou(msg);
+            msg.channel.send("Commande en développement");
         }
         if(msg.toString().startsWith(botMention + 'r6s')){
             msg.channel.send("Commande en développement");
