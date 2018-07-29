@@ -1,23 +1,79 @@
+const fs = require('fs');
 global.Discord = require('discord.js');
-const commands = require('./events/commands');
-const launchInterval = require('./functions/launchInterval');
+const { prefix } = require('./config.json');
+
 global.bot = new Discord.Client();
-const cleverbot = require('cleverbot.io');
-const createTVC = require('./functions/createTempVoiceChannel');
-global.cleverBot = new cleverbot('8sKTrhlp8UIjAS4H', process.env.CleverKEY); //process.env.CleverKEY
-global.botMention = '<@417683933891919882> ';
+bot.commands = new Discord.Collection();
+const cooldowns = new Discord.Collection();
+const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+
+const launchInterval = require('./src/functions/launchInterval');
+const createTVC = require('./src/functions/createTempVoiceChannel');
 global.tempChannels = new Map(); //MemberID, VoiceChannelID
 
-//Evenements
+
+for (const file of commandFiles) {
+    const command = require(`./src/commands/${file}`);
+    bot.commands.set(command.name, command);
+}
+
 bot.on('ready', function () { //Lancement des functions lors du démarrage
     bot.user.setActivity('@Barman help | by Sygix');
-    launchInterval.launch();
-    cleverBot.setNick("France.LaTaverne.PROD");
+    launchInterval();
 });
 
-bot.on('message', async function (msg) {
-    commands.check(msg);
+bot.on('message', function (msg) {
+    if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+
+    const args = msg.content.slice(prefix.length).split(/ +/);
+    const commandName = args.shift().toLowerCase();
+
+    const command = bot.commands.get(commandName)
+        || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+    if (!command) return;
+
+    if (command.guildOnly && msg.channel.type !== 'text') {
+        return msg.reply('Je ne peux pas executer cette commande en DM !');
+    }
+    if (command.args && !args.length) {
+        let reply = `Tu n'as donné aucun arguments, ${msg.author}!`;
+        if (command.usage) {
+            reply += `\nL'utilisation correcte de la commande est la suivante : \`${prefix}${command.name} ${command.usage}\``;
+        }
+        return msg.channel.send(reply);
+    }
+    if (!cooldowns.has(command.name)) {
+        cooldowns.set(command.name, new Discord.Collection());
+    }
+
+    const now = Date.now();
+    const timestamps = cooldowns.get(command.name);
+    const cooldownAmount = (command.cooldown || 3) * 1000;
+
+    if (!timestamps.has(msg.author.id)) {
+        timestamps.set(msg.author.id, now);
+        setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+    }
+    else {
+        const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+
+        if (now < expirationTime) {
+            const timeLeft = (expirationTime - now) / 1000;
+            return msg.reply(`Merci d'attendre encore ${timeLeft.toFixed(1)} seconde(s) avant d'utiliser la commande \`${command.name}\`.`);
+        }
+
+        timestamps.set(msg.author.id, now);
+        setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+    }
+    try {
+        command.execute(msg, args);
+    }
+    catch (error) {
+        console.error(error);
+        msg.reply('Une erreur s\'est produite !');
+    }
 });
+
 //Event LeaveChannel
 bot.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel;
@@ -50,7 +106,3 @@ bot.on('voiceStateUpdate', (oldMember, newMember) => {
 });
 
 bot.login(process.env.DiscordTOKEN); //process.env.DiscordTOKEN
-
-process.on('exit', function(code) {
-    return console.log(`About to exit with code ${code}`);
-});

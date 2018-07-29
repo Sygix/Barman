@@ -31,8 +31,4 @@ module.exports = class createEmbed{
         return {embed};
     }*/
 
-    static createAkinator(response){
-
-    }
-
 };
