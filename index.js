@@ -38,7 +38,7 @@ bot.on('message', function (msg) {
     if (command.args && !args.length) {
         let reply = `Tu n'as donné aucun arguments, ${msg.author}!`;
         if (command.usage) {
-            reply += `\nL'utilisation correcte de la commande est la suivante : \`${prefix}${command.name} ${command.usage}\``;
+            reply += `\nL'utilisation correcte de la commande est la suivante : ${prefix}\`${command.name} ${command.usage}\``;
         }
         return msg.channel.send(reply);
     }
