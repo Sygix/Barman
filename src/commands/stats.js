@@ -1,4 +1,5 @@
 const msToTime = require('../functions/msToTime');
+const os = require('os');
 
 module.exports = {
     name: 'stats',
@@ -9,7 +10,7 @@ module.exports = {
         msg.channel.send(
             {
                 "embed": {
-                    "title": "Statisques d'utilisation du Barman","url": "https://discordapp.com",
+                    "title": "Statisques d'utilisation du Barman","url": "https://discordapp.com/oauth2/authorize?client_id=417683933891919882&permissions=1610083447&scope=bot",
                     "color": 45632,
                     "footer": {
                         "text": "Sygix"
@@ -29,15 +30,16 @@ module.exports = {
                             "name": "Uptime",
                             "value": msToTime(bot.uptime),
                             "inline": true
-                        }/*,
-                        {
-                            "name": "<:thonkang:219069250692841473>",
-                            "value": "are inline fields",
-                            "inline": true
                         },
                         {
-                            "name": "<:thonkang:219069250692841473>",
-                            "value": "these last two",
+                            "name": "Utilisation de la mémoire vive",
+                            "value": `${Math.round((os.totalmem() - os.freemem()) / ( 1024 * 1024 * 1024 )*100)/100} / ${Math.round(os.totalmem() / 
+                                ( 1024 * 1024 * 1024 )*100)/100} Go`,
+                            "inline": true
+                        }/*,
+                        {
+                            "name": "Utilisation CPU",
+                            "value": "",
                             "inline": true
                         },
                         {
