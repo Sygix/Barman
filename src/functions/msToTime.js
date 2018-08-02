@@ -10,6 +10,6 @@ module.exports = function msToTime(duration){
     minutes = (minutes < 10) ? "0" + minutes : minutes;
     seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-    return days + " jours " + hours + " heures " + minutes + " minutes " + seconds + " secondes ";
+    return days + " jours " + hours + ":" + minutes + ":" + seconds + "s";
 
 };

@@ -7,7 +7,7 @@ module.exports = {
     guildOnly: true,
     async execute(msg, args) {
         //ERREUR ICI SI c'est en DM
-        if(msg.member.hasPermission('MANAGE_MESSAGES')){
+        if(msg.member.hasPermission('MANAGE_MESSAGES') || msg.member.hasPermission('ADMINISTRATOR')){
             // This command removes all messages from all users in the channel, up to 500.
             // get the delete count, as an actual number.
             const deleteCount = parseInt(args[0], 10)+1;
