@@ -1,4 +1,4 @@
-module.exports = function morpionGame(msg, playerUser){
+module.exports = function morpionGame(msg, playerUser, player2User = undefined){
 
     const channel = msg.channel;
     var messageEDIT;
@@ -6,6 +6,7 @@ module.exports = function morpionGame(msg, playerUser){
     var _boardSize = 3
         , _boardData = {}
         , _playerMarks = [':x:', ':o:']
+        , _playerMember = [playerUser, player2User]
         , _players = [];
 
     /**
@@ -43,15 +44,16 @@ module.exports = function morpionGame(msg, playerUser){
 
         if (playerTypes.length == 2) {
             initialIndex = Math.round(Math.random());
-
             _players = [
                 {
                     marker: _playerMarks[initialIndex],
-                    type: playerTypes[0]
+                    type: playerTypes[0],
+                    member: _playerMember[initialIndex]
                 },
                 {
                     marker: _playerMarks[(!initialIndex | 0)],
-                    type: playerTypes[1]
+                    type: playerTypes[1],
+                    member: _playerMember[(!initialIndex | 0)]
                 }
             ]
         }
@@ -101,28 +103,34 @@ module.exports = function morpionGame(msg, playerUser){
      * @private
      */
     function _getInput(callback) {
+        var memberM;
+        if(typeof player2User === 'undefined'){
+            memberM = msg.member;
+        }else{
+            memberM = _players[0].member;
+        }
 
         if (typeof messageTurn === 'undefined') {
-            msg.channel.send('C\'est le tour de ' + playerUser.displayName + ' ' +  _players[0].marker + ' (entre le numéro de ligne puis de colonne de 0 à 2).')
+            msg.channel.send('C\'est le tour de ' + memberM.user + ' ' +  _players[0].marker + ' (entre le numéro de ligne puis de colonne, de 0 à 2).')
                 .then(message => messageTurn = message);
         }
 
-        const collector = new Discord.MessageCollector(msg.channel, m => m.author.id === playerUser.id, { time: 60000, errors: ['time'] });
+        const collector = new Discord.MessageCollector(msg.channel, m => m.author.id === memberM.id, { time: 60000, errors: ['time'] });
         collector.on('collect', message => {
             if (_boardData.empty.indexOf(message.content) != -1) {
-                callback(_posFromString(message.content));
                 message.delete(2000);
                 messageTurn.delete();
                 messageTurn = undefined;
                 collector.stop('success');
+                callback(_posFromString(message.content));
             } else {
-                _getInput(callback);
                 message.delete(2000);
                 collector.stop('success/callback');
+                _getInput(callback);
             }
         });
         collector.on('end', reason => {
-            if(reason == 'time'){
+            if(reason.array().length <= 0){
                 msg.channel.send("La requète à expiré ! (60 secondes)");
             }
         });
@@ -277,8 +285,8 @@ module.exports = function morpionGame(msg, playerUser){
             _buildBoard();
             _setupPlayers(playerTypes);
 
-            if (_players[0].marker != ':x:') {
-                // Rotate the players so that ':x:' goes first
+            if (_players[0].marker != ':x:' && typeof player2User === 'undefined') {
+                // Rotate the players so that ':x:' goes first - Only with AI
                 _rotatePlayers();
             }
 
