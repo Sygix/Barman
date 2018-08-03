@@ -9,7 +9,7 @@ module.exports = {
     guildOnly: true,
     execute(msg, args) {
         if(!msg.guild.channels.find('name', 'Temporaire') || !msg.guild.channels.find('name', 'Rejoindre pour créer')){
-            msg.channel.send("Les channels temporaire n'ont pas encoré été mis en place sur ce discord.");
+            msg.channel.send("Les channels temporaire n'ont pas encore été mis en place sur ce discord.");
             if(msg.member.hasPermission('MANAGE_CHANNELS') || msg.member.hasPermission('ADMINISTRATOR')){
                 msg.reply("Voulez-vous les mettres en place ? (Oui/Non)");
                 const collector = new Discord.MessageCollector(msg.channel, m => m.author.id === msg.author.id, { time: 60000, errors: ['time'] });
@@ -53,7 +53,7 @@ module.exports = {
                     }
                 });
                 collector.on('end', reason => {
-                    if(reason == 'time'){
+                    if(reason.array().length <= 0){
                         msg.channel.send("La requète à expiré ! (60 secondes)");
                     }
                 });
