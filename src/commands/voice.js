@@ -7,6 +7,7 @@ module.exports = {
     args: true,
     active: true,
     usage: '(0-99) [public / @user @user]',
+    exemple: '99 @Sygix @Solarus',
     guildOnly: true,
     execute(msg, args) {
         if(!msg.guild.channels.find('name', 'Temporaire') || !msg.guild.channels.find('name', 'Rejoindre pour créer')){

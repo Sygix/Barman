@@ -5,6 +5,7 @@ module.exports = {
     args: true,
     active: true,
     usage: '(calcul)',
+    exemple: '2+2',
     execute(msg, args) {
         try {
             msg.channel.send(eval(args[0]) + ":nerd:");

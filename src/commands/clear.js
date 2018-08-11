@@ -4,6 +4,7 @@ module.exports = {
     aliases: ['delete', 'remove', 'effacer', 'supprimer'],
     args: true,
     active: true,
+    exemple: '99',
     usage: '(1-99)',
     guildOnly: true,
     async execute(msg, args) {

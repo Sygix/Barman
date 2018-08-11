@@ -6,6 +6,7 @@ module.exports = {
     description: 'Parle avec une intelligence artificielle.',
     args: true,
     active: true,
+    exemple: 'Bonjour comment ça va ?',
     usage: '(message)',
     guildOnly: true,
     async execute(msg, args) {
