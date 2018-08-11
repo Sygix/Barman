@@ -1,10 +1,11 @@
-const p4Game = require('../../functions/puissance4Game');
+const p4Game = require('../functions/puissance4Game');
 
 module.exports = {
     name: 'puissance4',
     description: 'Jeu du puissance 4.',
     aliases: ['p4', 'connect4', 'c4'],
     usage: '[@user]',
+    active: false,
     guildOnly: true,
     async execute(msg, args) {
         if(args.length < 1){

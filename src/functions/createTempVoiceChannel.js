@@ -69,7 +69,6 @@ module.exports = class createTempVoiceChannel {
                             SPEAK: true
                         })
                             .catch(error => {
-                                channel.send("Une erreur s'est produite !");
                                 console.log(error);
                                 return;
                             });
@@ -83,13 +82,11 @@ module.exports = class createTempVoiceChannel {
                             .catch();
                     })
                     .catch(error => {
-                        channel.send("Une erreur s'est produite !");
                         console.log(error);
                         return;
                     }); //create in category temp
             })
             .catch(error => {
-                channel.send("Une erreur s'est produite !");
                 console.log(error);
                 return;
             });

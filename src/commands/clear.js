@@ -3,6 +3,7 @@ module.exports = {
     description: 'Efface des messages.',
     aliases: ['delete', 'remove', 'effacer', 'supprimer'],
     args: true,
+    active: true,
     usage: '(1-99)',
     guildOnly: true,
     async execute(msg, args) {
@@ -27,7 +28,7 @@ module.exports = {
                 })
                 .catch(error => msg.reply(`Je n'ai pas réussi à supprimer les messages : ${error}`));
         }else{
-            msg.reply('Malheuresement tu ne possèdes pas assez de permissions.')
+            msg.reply('Malheureusement tu ne possèdes pas assez de permissions.')
         }
     },
 };

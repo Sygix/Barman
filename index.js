@@ -14,7 +14,9 @@ global.tempChannels = new Map(); //MemberID, VoiceChannelID
 
 for (const file of commandFiles) {
     const command = require(`./src/commands/${file}`);
-    bot.commands.set(command.name, command);
+    if(command.active){
+        bot.commands.set(command.name, command);
+    }
 }
 
 bot.on('ready', function () { //Lancement des functions lors du démarrage

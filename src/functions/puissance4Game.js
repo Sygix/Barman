@@ -122,7 +122,7 @@ module.exports = function puissance4Game(msg, playerUser){
         });
         collector.on('end', reason => {
             if(reason.array().length <= 0){
-                msg.channel.send("La requète à expiré ! (60 secondes)");
+                msg.channel.send("La requète a expiré ! (60 secondes)");
             }
         });
     }
