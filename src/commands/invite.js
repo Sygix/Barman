@@ -1,6 +1,7 @@
 module.exports = {
     name: 'invite',
     description: 'Invite moi sur ton serveur discord.',
+    active: true,
     guildOnly: true,
     cooldown: 10,
     execute(msg, args) {

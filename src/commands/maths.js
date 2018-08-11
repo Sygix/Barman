@@ -3,6 +3,7 @@ module.exports = {
     description: 'Calcule pour toi :smile:',
     aliases: ['math'],
     args: true,
+    active: true,
     usage: '(calcul)',
     execute(msg, args) {
         try {

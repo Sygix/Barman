@@ -5,6 +5,7 @@ module.exports = {
     name: 'stats',
     description: 'Statisques à propos du bot.',
     aliases: ['uptime', 'statistics', 'statistique', 'statistiques'],
+    active: true,
     cooldown: 10,
     execute(msg, args) {
         msg.channel.send(
