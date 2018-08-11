@@ -5,6 +5,7 @@ module.exports = {
     description: 'La météo en temps réel !',
     aliases: ['meteo', 'météo'],
     usage: '(ville,code pays) [Celsius/Fahrenheit]', //ADD 5days and 3hours previsions
+    exemple: 'Los+Angeles,US, Fahrenheit',
     cooldown: 60,
     args: true,
     guildOnly: false,
@@ -15,10 +16,13 @@ module.exports = {
         let apiKey = process.env.WeatherKEY;
         let city = args[0].toLowerCase();
         let url = '';
+        let unit = '';
         if(typeof args[1] !== "undefined" && args[1].toLowerCase() === 'fahrenheit'){
             url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&lang=fr&appid=${apiKey}`;
+            unit = 'F'
         }else{
             url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=fr&appid=${apiKey}`;
+            unit = 'C'
         }
 
         request(url, function (err, response, body) {
@@ -47,12 +51,12 @@ module.exports = {
                                     },
                                     {
                                         "name": "Température",
-                                        "value": `${weather.main.temp}`,
+                                        "value": `${weather.main.temp} °${unit}`,
                                         "inline": true
                                     },
                                     {
                                         "name": "Humidité",
-                                        "value": `${weather.main.humidity}`,
+                                        "value": `${weather.main.humidity} %`,
                                         "inline": true
                                     },
                                     {

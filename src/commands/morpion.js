@@ -5,6 +5,7 @@ module.exports = {
     description: 'Jeu du Morpion/TicTacToe.',
     aliases: ['tictactoe'],
     usage: '[@user]',
+    exemple: '@Sygix',
     active: true,
     guildOnly: true,
     async execute(msg, args) {

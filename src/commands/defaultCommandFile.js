@@ -3,6 +3,7 @@ module.exports = {
     description: 'example',
     aliases: ['ex', 'exe'],
     usage: '() []',
+    exemple: '',
     cooldown: 0,
     args: true,
     guildOnly: true,

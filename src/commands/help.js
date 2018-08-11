@@ -5,6 +5,7 @@ module.exports = {
     description: 'Liste de toutes les commandes ou infos à propos d\'une commande particulère.',
     aliases: ['commands', 'aide', 'command'],
     usage: '[command]',
+    exemple: 'weather',
     active: true,
     cooldown: 5,
     execute(msg, args) {
@@ -37,6 +38,7 @@ module.exports = {
         if (command.aliases) data.push(`**Alias:** ${command.aliases.join(', ')}`);
         if (command.description) data.push(`**Description:** ${command.description}`);
         if (command.usage) data.push(`**Utilisation:** ${prefix}${command.name} ${command.usage}`);
+        if (command.exemple) data.push(`**Exemple:** ${prefix}${command.name} ${command.exemple}`);
         if (command.cooldown) data.push(`**Cooldown:** ${command.cooldown} seconde(s)`);
         if (command.category) data.push(`**Catégorie:** ${command.category}`);
 

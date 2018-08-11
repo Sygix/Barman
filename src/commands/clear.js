@@ -4,26 +4,34 @@ module.exports = {
     aliases: ['delete', 'remove', 'effacer', 'supprimer'],
     args: true,
     active: true,
-    usage: '(1-99)',
+    exemple: '99',
+    usage: '(1-999)',
     guildOnly: true,
     async execute(msg, args) {
-        //ERREUR ICI SI c'est en DM
         if(msg.member.hasPermission('MANAGE_MESSAGES') || msg.member.hasPermission('ADMINISTRATOR')){
             // This command removes all messages from all users in the channel, up to 500.
             // get the delete count, as an actual number.
-            const deleteCount = parseInt(args[0], 10)+1;
+            var totalDelete = 0;
+            var deleteCount = parseInt(args[0], 10)+1;
 
             // Ooooh nice, combined conditions. <3
-            if(!deleteCount || deleteCount < 2 || deleteCount > 100)
-                return msg.reply("Merci de donner un nombre de messages à supprimer entre 1 et 99 compris.");
+            if(!deleteCount || deleteCount < 2 || deleteCount > 1000)
+                return msg.reply("Merci de donner un nombre de messages à supprimer entre 1 et 999 compris.");
 
             // So we get our messages, and delete them. Simple enough, right?
+            while (deleteCount > 100){
+                const fetched = await msg.channel.fetchMessages({limit: 100});
+                msg.channel.bulkDelete(fetched)
+                    .catch(error => msg.reply(`Une erreur s'est produite durant la suppression, ${totalDelete} message supprimé : ${error}`));
+                deleteCount -= 100;
+                totalDelete += 100;
+            }
             const fetched = await msg.channel.fetchMessages({limit: deleteCount});
             msg.channel.bulkDelete(fetched)
                 .then(function () {
-                    msg.reply(deleteCount + " messages ont été supprimé !")
+                    msg.reply(totalDelete + deleteCount + " messages ont été supprimé !")
                         .then(sent => {
-                            sent.delete(2000);
+                            sent.delete(5000);
                         });
                 })
                 .catch(error => msg.reply(`Je n'ai pas réussi à supprimer les messages : ${error}`));
