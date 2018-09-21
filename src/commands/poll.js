@@ -7,7 +7,7 @@ module.exports = {
     cooldown: 15,
     args: true,
     guildOnly: true,
-    hidden: true,
+    hidden: false,
     category: 'Utilities',
     active: true,
     execute(msg, args) {
