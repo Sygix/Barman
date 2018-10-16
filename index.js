@@ -9,6 +9,8 @@ const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWi
 
 const launchInterval = require('./src/functions/launchInterval');
 const createTVC = require('./src/functions/createTempVoiceChannel');
+const firebase = require('./src/functions/firebase');
+const talkedRecently = new Set();
 global.tempChannels = new Map(); //MemberID, VoiceChannelID
 
 
@@ -22,10 +24,23 @@ for (const file of commandFiles) {
 bot.on('ready', function () { //Lancement des functions lors du démarrage
     bot.user.setActivity('@Barman help | by Sygix');
     launchInterval();
+    firebase.connectFirebase();
+    firebase.updateServers()
+        .catch(error => console.log(error));
 });
 
 bot.on('message', function (msg) {
-    if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+    if(msg.author.bot)return;
+
+    if (!talkedRecently.has(msg.author.id)) {
+         console.log(firebase.updateXP(msg.author.id));
+
+        talkedRecently.add(msg.author.id);
+        setTimeout(() => {
+            talkedRecently.delete(msg.author.id);
+        }, 0);
+    }
+    if (!msg.content.startsWith(prefix)) return;
 
     const args = msg.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
