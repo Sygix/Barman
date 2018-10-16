@@ -33,7 +33,6 @@ bot.on('message', function (msg) {
     if(msg.author.bot)return;
 
     if (!talkedRecently.has(msg.author.id)) {
-         console.log(firebase.updateXP(msg.author.id));
 
         talkedRecently.add(msg.author.id);
         setTimeout(() => {
@@ -98,12 +97,12 @@ bot.on('voiceStateUpdate', (oldMember, newMember) => {
     try {
         if(newUserChannel !== undefined) {
             // User Joins a voice channel
-            if(newUserChannel.parent.name === 'Temporaire' && newUserChannel.name === 'Rejoindre pour créer' && !tempChannels.has(oldMember.id)){
+            if(oldMember.guild.channels.get(tempChannels.get(oldMember.id)).parent !== undefined && newUserChannel.parent.name === 'Temporaire' && newUserChannel.name === 'Rejoindre pour créer' && !tempChannels.has(oldMember.id)){
                 createTVC.createWithoutMSG(newMember, newMember.guild);
             }
         } else if(newUserChannel === undefined){
             // User leave vocal
-            if(oldMember.guild.channels.get(tempChannels.get(oldMember.id)).parent.name === 'Temporaire' && tempChannels.has(oldMember.id)){
+            if(oldMember.guild.channels.get(tempChannels.get(oldMember.id)).parent !== undefined && oldMember.guild.channels.get(tempChannels.get(oldMember.id)).parent.name === 'Temporaire' && tempChannels.has(oldMember.id)){
                 oldMember.guild.channels.get(tempChannels.get(oldMember.id)).delete('Temp channel deleted')
                     .then(function(){
                         tempChannels.delete(oldMember.id);
