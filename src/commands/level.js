@@ -9,10 +9,11 @@ module.exports = {
     cooldown: 5,
     args: false,
     guildOnly: false,
-    hidden: false,
+    hidden: true,
     category: 'Level',
     active: true,
     execute(msg, args) {
         //firebase
+        msg.channel.send('Comming Soon :D');
     },
 };

@@ -24,22 +24,22 @@ for (const file of commandFiles) {
 bot.on('ready', function () { //Lancement des functions lors du démarrage
     bot.user.setActivity('@Barman help | by Sygix');
     launchInterval();
-    firebase.connectFirebase();
+    /*firebase.connectFirebase();
     firebase.updateServers()
-        .catch(error => console.log(error));
+        .catch(error => console.log(error));*/
 });
 
 bot.on('message', function (msg) {
     if(msg.author.bot)return;
 
-    if (!talkedRecently.has(msg.author.id)) {
+    /*if (!talkedRecently.has(msg.author.id)) {
          firebase.updateXP(msg.author.id);
 
         talkedRecently.add(msg.author.id);
         setTimeout(() => {
             talkedRecently.delete(msg.author.id);
         }, 0);
-    }
+    }*/
     if (!msg.content.startsWith(prefix)) return;
 
     const args = msg.content.slice(prefix.length).split(/ +/);
