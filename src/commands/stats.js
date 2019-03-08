@@ -14,7 +14,7 @@ module.exports = {
                     "title": "Statisques d'utilisation du Barman","url": "https://discordapp.com/oauth2/authorize?client_id=417683933891919882&permissions=1610083447&scope=bot",
                     "color": 45632,
                     "footer": {
-                        "text": "Sygix"
+                        "text": "by Sygix"
                     },
                     "fields": [
                         {
