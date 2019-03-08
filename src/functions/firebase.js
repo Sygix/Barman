@@ -39,26 +39,25 @@ module.exports = {
         var xp = 0;
         ref.transaction(function(currentXP) {
             // If xp has never been set, currentXP will be `null`.
+            //(userID, currentXP);
             return (currentXP || 0) + 1;
         });
     },
 
-    updateLVL: function(userID, lvl) {
+    updateLVL: function(userID, XP, callback) {
         var db = admin.database();
         var ref = db.ref("levels/"+userID+"/level");
         ref.transaction(function(currentLVL) {
             // If level has never been set, currentLVL will be `null`.
-            if(currentLVL < lvl){
+            const newLvl = Math.floor(0.1 * Math.sqrt(XP));
+            if(currentLVL < newLvl){
                 return (currentLVL || 0) + 1;
             }else return currentLVL;
         });
-    }
+    },
 
-    /*getFromFirebase: function() {
+    getLevelFromFirebase: function(UserID, callback) {
         var db = admin.database();
-        var ref = db.ref("servers");
-        ref.once("value", snap => {
-            console.log(snap.child('291817674894344193').val());
-        });
-    }*/
+        db.ref('/levels/' + UserID).once('value').then(callback);
+    }
 };

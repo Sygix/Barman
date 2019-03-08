@@ -2,18 +2,19 @@ const firebase = require('../functions/firebase');
 
 module.exports = {
     name: 'level',
-    description: 'Get your global level',
+    description: 'Get your cross servers level',
     aliases: ['xp', 'lvl', 'px'],
     usage: '[@user]',
     exemple: '@Sygix#3290',
-    cooldown: 5,
+    cooldown: 30,
     args: false,
     guildOnly: false,
-    hidden: true,
+    hidden: false,
     category: 'Level',
     active: true,
-    execute(msg, args) {
-        //firebase
-        msg.channel.send('Comming Soon :D');
+    async execute(msg, args) {
+        firebase.getLevelFromFirebase(msg.author.id, (snap) => {
+            msg.reply("Votre xp : "+snap.val().xp+"\n Votre level : "+snap.val().level);
+        });
     },
 };
