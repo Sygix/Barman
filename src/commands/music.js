@@ -40,5 +40,3 @@ module.exports = {
         return msg.channel.send(`Now Playing: ${info.title}`);
     },
 };
-
-//C:\Program Files\ffmpeg\bin\
