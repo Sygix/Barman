@@ -1,5 +1,4 @@
 const fs = require('fs');
-const ytdl = require('ytdl-core');
 global.Discord = require('discord.js');
 const { prefixes } = require('./config.json');
 
@@ -29,21 +28,6 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
     firebase.updateServers()
         .catch(error => console.log(error));
 
-    const channel = bot.channels.get("291817675540135936");
-    if (!channel) return console.error("The channel does not exist!");
-    channel.join().then(connection => {
-        // Yay, it worked!
-        console.log("Successfully connected.");
-        const stream = ytdl('https://www.youtube.com/watch?v=ZkqyIoYAXV8', { filter : 'audioonly' });
-        const dispatcher = connection.playStream(stream, { seek: 0, volume: 1 });
-        dispatcher.on("end", end => {
-            console.log("left channel");
-            channel.leave();
-        });
-    }).catch(e => {
-        // Oh no, it errored! Let's log it to console :)
-        console.error(e);
-    });
 });
 
 bot.on('message', async msg => {
