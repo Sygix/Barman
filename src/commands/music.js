@@ -10,7 +10,7 @@ module.exports = {
     guildOnly: true,
     hidden: true,
     category: 'music',
-    active: true,
+    active: false,
     async execute(msg, args) {
 
         if(!msg.member.voiceChannel)
