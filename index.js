@@ -1,6 +1,6 @@
 const fs = require('fs');
 global.Discord = require('discord.js');
-const { prefix } = require('./config.json');
+const { prefixes } = require('./config.json');
 
 global.bot = new Discord.Client();
 bot.commands = new Discord.Collection();
@@ -29,7 +29,7 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
         .catch(error => console.log(error));
 });
 
-bot.on('message', function (msg) {
+bot.on('message', async msg => {
     if(msg.author.bot)return;
 
     if (!talkedRecently.has(msg.author.id)) {
@@ -43,11 +43,18 @@ bot.on('message', function (msg) {
             talkedRecently.delete(msg.author.id);
         }, 0);
     }
-    if (!msg.content.startsWith(prefix)) return;
+
+    let prefix = false;
+    const prefixMention = `<@!${bot.user.id}> `;
+    for(const thisPrefix of prefixes) {
+        if(msg.content.startsWith(thisPrefix)) prefix = thisPrefix;
+    }
+    if(msg.content.match(prefixMention)) prefix = prefixMention;
+
+    if(!prefix) return;
 
     const args = msg.content.slice(prefix.length).split(/ +/);
     const commandName = args.shift().toLowerCase();
-
     const command = bot.commands.get(commandName)
         || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
     if (!command) return;

@@ -18,7 +18,7 @@ module.exports = {
         return new Promise(function(reject) {
                 bot.guilds.array().forEach(server => {
                     var serverID = ref.child(server.id);
-                    serverID.set({
+                    serverID.update({
                         name: server.name,
                         ownerID: server.ownerID,
                         ownerTag: server.owner.user.tag,
@@ -59,5 +59,18 @@ module.exports = {
     getLevelFromFirebase: function(UserID, callback) {
         var db = admin.database();
         db.ref('/levels/' + UserID).once('value').then(callback);
-    }
+    },
+
+    updatePrefix: function(serverID, newprefix) {
+        var db = admin.database();
+        var ref = db.ref("/servers/" + serverID + "/prefix");
+        ref.transaction((oldprefix) => {
+            return newprefix;
+        });
+    },
+
+    getServerSettings: function(serverID, callback) {
+        var db = admin.database();
+        db.ref('/servers/' + serverID).once('value').then(callback);
+    },
 };
