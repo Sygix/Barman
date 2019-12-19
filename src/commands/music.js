@@ -36,7 +36,6 @@ module.exports = {
             length: msToTime(songInfo.length_seconds*1000),
             author: msg.author.username,
         };
-        console.log(songInfo.length_seconds);
 
         if (!serverQueue) {
             const queueContruct = {
