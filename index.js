@@ -12,6 +12,7 @@ const createTVC = require('./src/functions/createTempVoiceChannel');
 const firebase = require('./src/functions/firebase');
 const talkedRecently = new Set();
 global.tempChannels = new Map(); //MemberID, VoiceChannelID
+global.musicQueue = new Map();
 
 
 for (const file of commandFiles) {
