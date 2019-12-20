@@ -21,7 +21,7 @@ module.exports = {
         if (!voiceChannel) return msg.channel.send('Vous devez être dans un canal vocal pour jouer de la musique !');
         const permissions = voiceChannel.permissionsFor(msg.client.user);
         if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-            return msg.channel.send("J'ai des permissions de rejoindre et de parler dans ce cannal.");
+            return msg.channel.send("J'ai besoin des permissions de rejoindre et de parler dans ce cannal.");
         }
 
         //NEED TO ADD CHECK FOR VALID VIDEO AND SEARCH FOR NAME
@@ -33,6 +33,7 @@ module.exports = {
         const song = {
             title: songInfo.title,
             url: songInfo.video_url,
+            thumbnail: songInfo.player_response.videoDetails.thumbnail.thumbnails[songInfo.player_response.videoDetails.thumbnail.thumbnails.length - 1].url,
             length: msToTime(songInfo.length_seconds*1000),
             author: msg.author.username,
         };
@@ -62,7 +63,7 @@ module.exports = {
         } else {
             serverQueue.songs.push(song);
             // Changer ce message pour afficher correctement
-            return msg.channel.send(`${song.title} à été ajouté à la file d'attente !`);
+            return msg.channel.send(`${song.title} à été ajouté à la file d'attente :headphones:`);
         }
     },
 };
@@ -76,7 +77,19 @@ function play(msg, song) {
         return;
     }
 
-    msg.channel.send("Joue maintenant : " + song.title + "\ndemandé par " + song.author + "\nDurée : "+song.length);
+    let nextTitle = serverQueue.songs[1] !== undefined ? serverQueue.songs[1].title : 'Rien';
+    msg.channel.send({
+            embed: {
+                "title": "Joue Maintenant :musical_note:",
+                "description": "["+song.title+"]("+song.url+")\n\nDurée : ``"+song.length+"`` \n\nDemandé par : ``"+song.author+"``\n\nSuivant : ``"+nextTitle+"``",
+                "url": "https://discordapp.com/oauth2/authorize?client_id=417683933891919882&permissions=1610083447&scope=bot",
+                "color": 16711708,
+                "thumbnail": {
+                    "url": song.thumbnail
+                }
+            }
+        }
+    );
     serverQueue.connection.playStream(ytdl(song.url, {filter: 'audioonly'}), {bitrate: 96000})
         .on('end', () => {
             serverQueue.songs.shift();
