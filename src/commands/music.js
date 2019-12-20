@@ -41,6 +41,7 @@ module.exports = {
         async function getSongInfo(musicLink){
             //Get song infos
             const songInfo = await ytdl.getInfo(musicLink);
+                if(songInfo.length_seconds > 1800) return msg.channel.send("La durée maximale par musique est de 30 minutes. :stopwatch:");
             const song = {
                 title: songInfo.title,
                 url: songInfo.video_url,
@@ -80,7 +81,7 @@ module.exports = {
         function play(msg, song) {
             const serverQueue = queue.get(msg.guild.id);
 
-            if (!song || serverQueue.voiceChannel.members <= 1) {
+            if (!song || serverQueue.voiceChannel.members.array().length <= 1) {
                 serverQueue.voiceChannel.leave();
                 queue.delete(msg.guild.id);
                 return;
