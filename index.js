@@ -13,6 +13,7 @@ const firebase = require('./src/functions/firebase');
 const talkedRecently = new Set();
 global.tempChannels = new Map(); //MemberID, VoiceChannelID
 global.musicQueue = new Map();
+const serversPrefix = new Map();
 
 
 for (const file of commandFiles) {
@@ -23,12 +24,12 @@ for (const file of commandFiles) {
 }
 
 bot.on('ready', function () { //Lancement des functions lors du démarrage
-    bot.user.setActivity('@Barman help | by Sygix');
+    bot.user.setActivity('Merry Xmas | @Barman help');
     launchInterval();
     firebase.connectFirebase();
     firebase.updateServers()
         .catch(error => console.log(error));
-
+    prefixes.push(`<@!${bot.user.id}> `, `<@${bot.user.id}> `); //add Mentions to prefixes
 });
 
 bot.on('message', async msg => {
@@ -46,60 +47,70 @@ bot.on('message', async msg => {
         }, 0);
     }
 
-    let prefix = false;
-    const prefixMention = `<@!${bot.user.id}> `;
-    for(const thisPrefix of prefixes) {
-        if(msg.content.startsWith(thisPrefix)) prefix = thisPrefix;
+    if(!serversPrefix.get(msg.guild.id)){
+        firebase.getServerSettings(msg.guild.id, (snap) => {
+            serversPrefix.set(msg.guild.id, snap.val().prefix);
+            checkPrefixAndExecute();
+        });
+    }else{
+        checkPrefixAndExecute();
     }
-    if(msg.content.match(prefixMention)) prefix = prefixMention;
 
-    if(!prefix) return;
-
-    const args = msg.content.slice(prefix.length).split(/ +/);
-    const commandName = args.shift().toLowerCase();
-    const command = bot.commands.get(commandName)
-        || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
-    if (!command) return;
-
-    if (command.guildOnly && msg.channel.type !== 'text') {
-        return msg.reply('Je ne peux pas executer cette commande en DM !');
-    }
-    if (command.args && !args.length) {
-        let reply = `Tu n'as donné aucun arguments, ${msg.author}!`;
-        if (command.usage) {
-            reply += `\nL'utilisation correcte de la commande est la suivante : ${prefix}\`${command.name} ${command.usage}\``;
+    function checkPrefixAndExecute() {
+        let prefix = false;
+        for(const thisPrefix of prefixes) {
+            if(msg.content.startsWith(thisPrefix)) prefix = thisPrefix;
         }
-        return msg.channel.send(reply);
-    }
-    if (!cooldowns.has(command.name)) {
-        cooldowns.set(command.name, new Discord.Collection());
-    }
+        if(msg.content.startsWith(serversPrefix.get(msg.guild.id))) prefix = serversPrefix.get(msg.guild.id);
 
-    const now = Date.now();
-    const timestamps = cooldowns.get(command.name);
-    const cooldownAmount = (command.cooldown || 3) * 1000;
+        if(!prefix) return;
 
-    if (!timestamps.has(msg.author.id)) {
-        timestamps.set(msg.author.id, now);
-        setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
-    }
-    else {
-        const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+        const args = msg.content.slice(prefix.length).split(/ +/);
+        const commandName = args.shift().toLowerCase();
+        const command = bot.commands.get(commandName)
+            || bot.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        if (!command) return;
 
-        if (now < expirationTime) {
-            const timeLeft = (expirationTime - now) / 1000;
-            return msg.reply(`Merci d'attendre encore ${timeLeft.toFixed(1)} seconde(s) avant d'utiliser la commande \`${command.name}\`.`);
+        if (command.guildOnly && msg.channel.type !== 'text') {
+            return msg.reply('Je ne peux pas executer cette commande en DM !');
+        }
+        if (command.args && !args.length) {
+            let reply = `Tu n'as donné aucun arguments, ${msg.author}!`;
+            if (command.usage) {
+                reply += `\nL'utilisation correcte de la commande est la suivante : ${prefix}\`${command.name} ${command.usage}\``;
+            }
+            return msg.channel.send(reply);
+        }
+        if (!cooldowns.has(command.name)) {
+            cooldowns.set(command.name, new Discord.Collection());
         }
 
-        timestamps.set(msg.author.id, now);
-        setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
-    }
-    try {
-        command.execute(msg, args);
-    }
-    catch (error) {
-        console.error(error);
-        msg.reply('Une erreur s\'est produite !');
+        const now = Date.now();
+        const timestamps = cooldowns.get(command.name);
+        const cooldownAmount = (command.cooldown || 3) * 1000;
+
+        if (!timestamps.has(msg.author.id)) {
+            timestamps.set(msg.author.id, now);
+            setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+        }
+        else {
+            const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+
+            if (now < expirationTime) {
+                const timeLeft = (expirationTime - now) / 1000;
+                return msg.reply(`Merci d'attendre encore ${timeLeft.toFixed(1)} seconde(s) avant d'utiliser la commande \`${command.name}\`.`);
+            }
+
+            timestamps.set(msg.author.id, now);
+            setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+        }
+        try {
+            command.execute(msg, args);
+        }
+        catch (error) {
+            console.error(error);
+            msg.reply('Une erreur s\'est produite !');
+        }
     }
 });
 
