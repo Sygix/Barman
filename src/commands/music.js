@@ -3,10 +3,13 @@ const ytsr = require('ytsr');
 const msToTime = require('../functions/msToTime');
 const queue = musicQueue;
 
+//ADDING TWITCH STREAM OR STREAM FILE LINK
+//GET TWITCH URL AS m3u8 https://github.com/nicholastay/node-twitch-get-stream/blob/master/index.js
+
 module.exports = {
     name: 'music',
     description: 'play music into a voice channel',
-    aliases: ['musique', 'm', 'play', 'p', 'listen'],
+    aliases: ['musique', 'm', 'play', 'p'],
     exemple: 'Youtube name/link',
     cooldown: 0,
     args: true,
