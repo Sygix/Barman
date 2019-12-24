@@ -14,8 +14,6 @@ const talkedRecently = new Set();
 global.tempChannels = new Map(); //MemberID, VoiceChannelID
 global.musicQueue = new Map();
 const serversPrefix = new Map();
-
-
 for (const file of commandFiles) {
     const command = require(`./src/commands/${file}`);
     if(command.active){
@@ -47,11 +45,15 @@ bot.on('message', async msg => {
         }, 0);
     }
 
-    if(!serversPrefix.get(msg.guild.id)){
-        firebase.getServerSettings(msg.guild.id, (snap) => {
-            serversPrefix.set(msg.guild.id, snap.val().prefix);
+    if(msg.channel.type === 'text'){
+        if(!serversPrefix.get(msg.guild.id)){
+            firebase.getServerSettings(msg.guild.id, (snap) => {
+                serversPrefix.set(msg.guild.id, snap.val().prefix);
+                checkPrefixAndExecute();
+            });
+        }else{
             checkPrefixAndExecute();
-        });
+        }
     }else{
         checkPrefixAndExecute();
     }
@@ -61,7 +63,9 @@ bot.on('message', async msg => {
         for(const thisPrefix of prefixes) {
             if(msg.content.startsWith(thisPrefix)) prefix = thisPrefix;
         }
-        if(msg.content.startsWith(serversPrefix.get(msg.guild.id))) prefix = serversPrefix.get(msg.guild.id);
+        if(msg.channel.type === 'text'){
+            if(msg.content.startsWith(serversPrefix.get(msg.guild.id))) prefix = serversPrefix.get(msg.guild.id);
+        }
 
         if(!prefix) return;
 

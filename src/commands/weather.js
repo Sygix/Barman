@@ -6,7 +6,7 @@ module.exports = {
     aliases: ['meteo', 'météo'],
     usage: '(ville,code pays) [Celsius/Fahrenheit]', //ADD 5days and 3hours previsions
     exemple: 'Los+Angeles,US, Fahrenheit',
-    cooldown: 60,
+    cooldown: 15,
     args: true,
     guildOnly: false,
     hidden: false,
