@@ -3,7 +3,7 @@ module.exports = {
     description: 'Calcule pour toi :smile:',
     aliases: ['math'],
     args: true,
-    active: true,
+    active: false, //Need to patch eval breach
     usage: '(calcul)',
     exemple: '2+2',
     execute(msg, args) {

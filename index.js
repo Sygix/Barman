@@ -48,8 +48,12 @@ bot.on('message', async msg => {
     if(msg.channel.type === 'text'){
         if(!serversPrefix.get(msg.guild.id)){
             firebase.getServerSettings(msg.guild.id, (snap) => {
-                serversPrefix.set(msg.guild.id, snap.val().prefix);
-                checkPrefixAndExecute();
+                try {
+                    serversPrefix.set(msg.guild.id, snap.val().prefix);
+                    checkPrefixAndExecute();
+                }catch (e) {
+                    checkPrefixAndExecute();
+                }
             });
         }else{
             checkPrefixAndExecute();
