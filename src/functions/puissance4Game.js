@@ -4,7 +4,7 @@ module.exports = function puissance4Game(msg, playerUser){
     var messageEDIT;
     var messageTurn;
     var _boardData = {}
-        , _playerMarks = [':red_circle:', ':large_blue_circle:']
+        , _playerMarks = [':red_circle:', ':blue_circle:']
         , _players = [];
 
     /**
