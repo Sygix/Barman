@@ -1,16 +1,14 @@
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
+const ytpl = require('ytpl');
 const msToTime = require('../functions/msToTime');
 const queue = musicQueue;
-
-//ADDING TWITCH STREAM OR STREAM FILE LINK
-//GET TWITCH URL AS m3u8 https://github.com/nicholastay/node-twitch-get-stream/blob/master/index.js
 
 module.exports = {
     name: 'music',
     description: 'play music into a voice channel',
     aliases: ['musique', 'm', 'play', 'p'],
-    exemple: 'Youtube name/link',
+    exemple: 'YT music name/link/playlist link [number of the playlist songs you want]',
     cooldown: 0,
     args: true,
     guildOnly: true,
@@ -19,7 +17,7 @@ module.exports = {
     active: true,
     async execute(msg, args) {
         //Get guild queue
-        const serverQueue = queue.get(msg.guild.id);
+        var serverQueue = queue.get(msg.guild.id);
         //Check perms
         const voiceChannel = msg.member.voiceChannel;
         if (!voiceChannel) return msg.channel.send('Vous devez être dans un canal vocal pour jouer de la musique !');
@@ -28,23 +26,90 @@ module.exports = {
             return msg.channel.send("J'ai besoin des permissions de rejoindre et de parler dans ce cannal.");
         }
 
-        let validate = await ytdl.validateURL(args[0]);
-        if(!validate) {
-            let search = '';
-            for(let i = 0; i < args.length; i++){
-                search += args[i] + " ";
+        let validatePl = await ytpl.validateURL(args[0]);
+        if(!validatePl){
+            let validate = await ytdl.validateURL(args[0]);
+            if(!validate) {
+                let search = '';
+                for(let i = 0; i < args.length; i++){
+                    search += args[i] + " ";
+                }
+                ytsr(search, {limit: 1})
+                    .then( (result) => getSongInfo(result.items[0].link))
+                    .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
+            }else{
+                getSongInfo(args[0]);
             }
-            ytsr(search, {limit: 1})
-                .then( (result) => getSongInfo(result.items[0].link))
-                .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
         }else{
-            getSongInfo(args[0]);
+            if(args[1] !== undefined && !args[1].isNaN) {
+                ytpl(args[0], {limit: args[1]})
+                    .then( result => {
+                        addPlaylist(result.items);
+                    })
+                    .catch( () => {
+                        ytsr(args[0], {limit: 1})
+                            .then( (result) => getSongInfo(result.items[0].link))
+                            .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
+                    });
+            }else{
+                ytpl(args[0], {limit: 0})
+                    .then( result => {
+                        addPlaylist(result.items);
+                    })
+                    .catch( () => {
+                        ytsr(args[0], {limit: 1})
+                            .then( (result) => getSongInfo(result.items[0].link))
+                            .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
+                    });
+            }
+
+        }
+
+        async function addPlaylist(items) {
+
+            for(let i = 0; i < items.length; i++){
+                let music = items[i];
+
+                const song = {
+                    title: music.title,
+                    url: music.url_simple,
+                    thumbnail: music.thumbnail,
+                    length: music.duration,
+                    author: msg.author.username,
+                };
+
+                if (!serverQueue) {
+                    const queueContruct = {
+                        textChannel: msg.channel,
+                        voiceChannel: voiceChannel,
+                        connection: null,
+                        songs: [],
+                        playing: true,
+                    };
+
+                    queue.set(msg.guild.id, queueContruct);
+                    serverQueue = queueContruct;
+                    queueContruct.songs.push(song);
+
+                    try {
+                        var connection = await voiceChannel.join();
+                        queueContruct.connection = connection;
+                        play(msg, queueContruct.songs[0]);
+                    } catch (err) {
+                        console.log(err);
+                        queue.delete(msg.guild.id);
+                    }
+                } else {
+                    serverQueue.songs.push(song);
+                }
+            }
+            msg.channel.send("La playlist à été ajouté à la file d'attente :headphones:");
         }
 
         async function getSongInfo(musicLink){
             //Get song infos
             const songInfo = await ytdl.getInfo(musicLink);
-                if(songInfo.length_seconds > 1800) return msg.channel.send("La durée maximale par musique est de 30 minutes. :stopwatch:");
+            if(songInfo.length_seconds > 1800) return msg.channel.send("La durée maximale par musique est de 30 minutes. :stopwatch:");
             const song = {
                 title: songInfo.title,
                 url: songInfo.video_url,
@@ -73,7 +138,7 @@ module.exports = {
                 } catch (err) {
                     console.log(err);
                     queue.delete(msg.guild.id);
-                    return msg.channel.send(err);
+                    return;
                 }
             } else {
                 serverQueue.songs.push(song);
