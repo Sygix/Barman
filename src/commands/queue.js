@@ -5,7 +5,7 @@ module.exports = {
     description: "See what music is up next in",
     aliases: ['upnext'],
     exemple: '',
-    cooldown: 0,
+    cooldown: 5,
     args: false,
     guildOnly: true,
     hidden: false,

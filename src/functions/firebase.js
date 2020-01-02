@@ -12,6 +12,11 @@ module.exports = {
         console.log("Connected to Firebase");
     },
 
+    closeFirebase: function() {
+        admin.database().goOffline();
+        console.log("Disconnected from Firebase");
+    },
+
     updateServers: function() {
         var db = admin.database();
         var ref = db.ref("servers");
@@ -22,7 +27,8 @@ module.exports = {
                         name: server.name,
                         ownerID: server.ownerID,
                         ownerTag: server.owner.user.tag,
-                        channels: server.channels.array().length
+                        channels: server.channels.array().length,
+                        memberCount: server.memberCount
                     }, function(error) {
                         if (error) {
                             reject(error);
@@ -73,4 +79,19 @@ module.exports = {
         var db = admin.database();
         db.ref('/servers/' + serverID).once('value').then(callback);
     },
+    
+    cacheMap: function (map, collection) {
+        var db = admin.database();
+        var ref = db.ref('/cache/'+collection);
+        const obj = Object.fromEntries(map);
+        return new Promise(function(reject) {
+            ref.update(obj, function(error) {
+                if (error) {
+                    reject(error)
+                }
+            });
+        });
+    },
+
+
 };

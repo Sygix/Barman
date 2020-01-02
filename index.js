@@ -7,12 +7,12 @@ bot.commands = new Discord.Collection();
 const cooldowns = new Discord.Collection();
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
 
-const launchInterval = require('./src/functions/launchInterval');
 const createTVC = require('./src/functions/createTempVoiceChannel');
 const firebase = require('./src/functions/firebase');
 const talkedRecently = new Set();
 global.tempChannels = new Map(); //MemberID, VoiceChannelID
 global.musicQueue = new Map();
+global.botStatus = "OFFLINE";
 const serversPrefix = new Map();
 for (const file of commandFiles) {
     const command = require(`./src/commands/${file}`);
@@ -22,12 +22,12 @@ for (const file of commandFiles) {
 }
 
 bot.on('ready', function () { //Lancement des functions lors du démarrage
-    bot.user.setActivity('Merry Xmas | @Barman help');
-    launchInterval();
+    bot.user.setActivity('Happy New Year 🥂 | @Barman help');
     firebase.connectFirebase();
     firebase.updateServers()
         .catch(error => console.log(error));
     prefixes.push(`<@!${bot.user.id}> `, `<@${bot.user.id}> `); //add Mentions to prefixes
+    botStatus = "STARTED";
 });
 
 bot.on('message', async msg => {
@@ -72,6 +72,9 @@ bot.on('message', async msg => {
         }
 
         if(!prefix) return;
+
+        //Checking for BotStatus to block new requests
+        if(botStatus !== "STARTED") return msg.channel.send("Barman is actually restarting/offline, please retry later. (Current Status:"+botStatus+")");
 
         const args = msg.content.slice(prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
@@ -124,6 +127,9 @@ bot.on('message', async msg => {
 
 //Event LeaveChannel
 bot.on('voiceStateUpdate', (oldMember, newMember) => {
+    //Checking for BotStatus
+    if(botStatus !== "STARTED") return;
+
     let newUserChannel = newMember.voiceChannel;
     let oldUserChannel = oldMember.voiceChannel;
     try {
@@ -154,3 +160,42 @@ bot.on('voiceStateUpdate', (oldMember, newMember) => {
 });
 
 bot.login(process.env.DiscordTOKEN); //process.env.DiscordTOKEN
+
+
+//Caching closing signals before server stopping
+process.once('SIGTERM', function (code) {
+    console.log('SIGINT received... ');
+    closeBot();
+    process.exit();
+});
+
+process.once('SIGINT', function (code) {
+    console.log('SIGINT received... ');
+    closeBot();
+    process.exit();
+});
+
+function closeBot() {
+    botStatus = "CLOSING";
+
+    const obj = Object.fromEntries(musicQueue);
+    console.log(obj);
+
+    firebase.cacheMap(tempChannels, 'tempChannels')
+        .then(()=> {
+            //cache music queue
+            //cache games
+
+            firebase.closeFirebase();
+        })
+        .catch(err => console.log(err));
+
+    botStatus = "OFFLINE";
+    bot.destroy();
+    console.log('Finished closing app');
+}
+
+//(node:7104) DeprecationWarning: Guild#createChannel: Create channels with an options object instead of separate parameters
+//(node:7104) DeprecationWarning: Collection#find: pass a function instead
+
+// DELETE ENTRY 291817674894344200 on firebase
