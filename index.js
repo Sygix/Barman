@@ -27,7 +27,17 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
     firebase.updateServers()
         .catch(error => console.log(error));
     prefixes.push(`<@!${bot.user.id}> `, `<@${bot.user.id}> `); //add Mentions to prefixes
-    botStatus = "STARTED";
+    firebase.get('/cache/tempChannels')
+        .then(snap => {
+            if(snap.val() !== null){
+                Object.keys(snap.val()).forEach(k => { //WILL NEED TO CHECK IF USER LEFT VOICE WHILE OFFLINE
+                    tempChannels.set(k, snap.val()[k]);
+                });
+                firebase.delete('/cache/tempChannels');
+            }
+            botStatus = "STARTED";
+        })
+        .catch(err => console.log(err));
 });
 
 bot.on('message', async msg => {
@@ -47,14 +57,14 @@ bot.on('message', async msg => {
 
     if(msg.channel.type === 'text'){
         if(!serversPrefix.get(msg.guild.id)){
-            firebase.getServerSettings(msg.guild.id, (snap) => {
-                try {
+            firebase.getServerSettings(msg.guild.id)
+                .then(snap => {
                     serversPrefix.set(msg.guild.id, snap.val().prefix);
                     checkPrefixAndExecute();
-                }catch (e) {
+                })
+                .catch(err => {
                     checkPrefixAndExecute();
-                }
-            });
+                });
         }else{
             checkPrefixAndExecute();
         }
@@ -74,7 +84,7 @@ bot.on('message', async msg => {
         if(!prefix) return;
 
         //Checking for BotStatus to block new requests
-        if(botStatus !== "STARTED") return msg.channel.send("Barman is actually restarting/offline, please retry later. (Current Status:"+botStatus+")");
+        if(botStatus !== "STARTED") return msg.channel.send("Barman is actually restarting/offline, please retry later.");
 
         const args = msg.content.slice(prefix.length).split(/ +/);
         const commandName = args.shift().toLowerCase();
@@ -177,19 +187,15 @@ process.once('SIGINT', function (code) {
 
 function closeBot() {
     botStatus = "CLOSING";
-
-    const obj = Object.fromEntries(musicQueue);
-    console.log(obj);
+    // firebase.cacheMap(musicQueue, 'musicQueue')
+    //    .catch(err => console.log(err));
 
     firebase.cacheMap(tempChannels, 'tempChannels')
-        .then(()=> {
-            //cache music queue
-            //cache games
-
+        .then(() => {
             firebase.closeFirebase();
         })
         .catch(err => console.log(err));
-
+    //cache game
     botStatus = "OFFLINE";
     bot.destroy();
     console.log('Finished closing app');
@@ -197,5 +203,3 @@ function closeBot() {
 
 //(node:7104) DeprecationWarning: Guild#createChannel: Create channels with an options object instead of separate parameters
 //(node:7104) DeprecationWarning: Collection#find: pass a function instead
-
-// DELETE ENTRY 291817674894344200 on firebase

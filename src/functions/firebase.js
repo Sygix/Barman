@@ -75,9 +75,9 @@ module.exports = {
         });
     },
 
-    getServerSettings: function(serverID, callback) {
+    getServerSettings: function(serverID) {
         var db = admin.database();
-        db.ref('/servers/' + serverID).once('value').then(callback);
+        return db.ref('/servers/' + serverID).once('value');
     },
     
     cacheMap: function (map, collection) {
@@ -93,5 +93,15 @@ module.exports = {
         });
     },
 
+    //NEED TO CLEAN UNNECESSARY CODE & FUNCTIONS
 
+    get: function (path) {
+        var db = admin.database();
+        return db.ref(path).once('value');
+    },
+
+    delete: function (path) {
+        var db = admin.database();
+        return db.ref(path).remove();
+    }
 };
