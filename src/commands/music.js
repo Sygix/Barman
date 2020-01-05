@@ -177,6 +177,10 @@ module.exports = {
                     console.error(error);
                     msg.channel.send("Malheureusement, une erreur s'est produite veuillez réessayer ultérieurement :confused:");
                 });
+            serverQueue.connection.on('disconnect', () => {
+                serverQueue.songs = [];
+                serverQueue.connection.dispatcher.end();
+            });
         }
     },
 };
