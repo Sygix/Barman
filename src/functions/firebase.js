@@ -12,6 +12,11 @@ module.exports = {
         console.log("Connected to Firebase");
     },
 
+    closeFirebase: function() {
+        admin.database().goOffline();
+        console.log("Disconnected from Firebase");
+    },
+
     updateServers: function() {
         var db = admin.database();
         var ref = db.ref("servers");
@@ -22,7 +27,8 @@ module.exports = {
                         name: server.name,
                         ownerID: server.ownerID,
                         ownerTag: server.owner.user.tag,
-                        channels: server.channels.array().length
+                        channels: server.channels.array().length,
+                        memberCount: server.memberCount
                     }, function(error) {
                         if (error) {
                             reject(error);
@@ -69,8 +75,33 @@ module.exports = {
         });
     },
 
-    getServerSettings: function(serverID, callback) {
+    getServerSettings: function(serverID) {
         var db = admin.database();
-        db.ref('/servers/' + serverID).once('value').then(callback);
+        return db.ref('/servers/' + serverID).once('value');
     },
+    
+    cacheMap: function (map, collection) {
+        var db = admin.database();
+        var ref = db.ref('/cache/'+collection);
+        const obj = Object.fromEntries(map);
+        return new Promise(function(reject) {
+            ref.update(obj, function(error) {
+                if (error) {
+                    reject(error)
+                }
+            });
+        });
+    },
+
+    //NEED TO CLEAN UNNECESSARY CODE & FUNCTIONS
+
+    get: function (path) {
+        var db = admin.database();
+        return db.ref(path).once('value');
+    },
+
+    delete: function (path) {
+        var db = admin.database();
+        return db.ref(path).remove();
+    }
 };
