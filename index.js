@@ -22,7 +22,7 @@ for (const file of commandFiles) {
 }
 
 bot.on('ready', function () { //Lancement des functions lors du démarrage
-    bot.user.setActivity('Happy New Year 🥂 | @Barman help');
+    bot.user.setActivity('Stay safe | @Barman help');
     firebase.connectFirebase();
     firebase.updateServers()
         .catch(error => console.log(error));
