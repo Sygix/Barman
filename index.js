@@ -40,8 +40,19 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
             botStatus = "STARTED";
         })
         .catch(err => console.log(err));
-    
-    //HAVE TO ADD emotesChannel back to his arrray
+
+    firebase.get('/cache/emoteChannels')
+        .then(snap => {
+            if(snap.val() !== null){
+                snap.val().forEach(value => {
+                    emoteMode.push(value)
+                });
+                firebase.delete('/cache/emoteChannels');
+            }
+            botStatus = "STARTED";
+        })
+        .catch(err => console.log(err));
+
 });
 
 bot.on('message', async msg => {

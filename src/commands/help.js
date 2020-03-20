@@ -20,7 +20,7 @@ module.exports = {
                 if(!command.hidden) data.push('    - '+command.name);
             });
             data.push(`\n\`\`\`Vous pouvez écrire ${prefix}\`help [command name]\` pour avoir plus d'infos sur une commande particulière !\n`);
-            data.push("Informations complémentaire et aide disponible sur ce discord : https://discord.gg/zgMKGT4 \n" +
+            data.push("Informations complémentaire et aide disponible sur ce discord : https://sygix.fr/discord \n" +
                 "() = champ obligatoire | [] = champ optionnel | Bot by Sygix#3290");
 
             return msg.channel.send(data, { split: true });
