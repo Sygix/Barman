@@ -40,6 +40,8 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
             botStatus = "STARTED";
         })
         .catch(err => console.log(err));
+    
+    //HAVE TO ADD emotesChannel back to his arrray
 });
 
 bot.on('message', async msg => {
@@ -210,15 +212,19 @@ function closeBot() {
     // firebase.cacheMap(musicQueue, 'musicQueue')
     //    .catch(err => console.log(err));
 
-    firebase.cacheMap(tempChannels, 'tempChannels')
+    const tempchannels = firebase.cacheMap(tempChannels, 'tempChannels')
+        .catch(err => console.log(err));
+    const emoteChannels = firebase.set('/cache/emoteChannels', emoteMode)
+        .catch(err => console.log(err));
+
+    Promise.all([tempchannels, emoteChannels])
         .then(() => {
             firebase.closeFirebase();
+            botStatus = "OFFLINE";
+            bot.destroy();
+            console.log('Finished closing app');
         })
         .catch(err => console.log(err));
-    //cache game
-    botStatus = "OFFLINE";
-    bot.destroy();
-    console.log('Finished closing app');
 }
 
 //(node:7104) DeprecationWarning: Guild#createChannel: Create channels with an options object instead of separate parameters

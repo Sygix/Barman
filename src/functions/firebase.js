@@ -95,6 +95,18 @@ module.exports = {
 
     //NEED TO CLEAN UNNECESSARY CODE & FUNCTIONS
 
+    set: function (path, value) {
+        var db = admin.database();
+        var ref = db.ref(path);
+        return new Promise(function(reject) {
+            ref.set(value, function(error) {
+                if (error) {
+                    reject(error)
+                }
+            });
+        });
+    },
+
     get: function (path) {
         var db = admin.database();
         return db.ref(path).once('value');
