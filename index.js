@@ -1,4 +1,5 @@
 const fs = require('fs');
+const emojiRegex = require('emoji-regex');
 global.Discord = require('discord.js');
 const { prefixes } = require('./config.json');
 
@@ -12,6 +13,7 @@ const firebase = require('./src/functions/firebase');
 const talkedRecently = new Set();
 global.tempChannels = new Map(); //MemberID, VoiceChannelID
 global.musicQueue = new Map();
+global.emoteMode = []; //ChannelID
 global.botStatus = "OFFLINE";
 const serversPrefix = new Map();
 for (const file of commandFiles) {
@@ -38,10 +40,41 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
             botStatus = "STARTED";
         })
         .catch(err => console.log(err));
+
+    firebase.get('/cache/emoteChannels')
+        .then(snap => {
+            if(snap.val() !== null){
+                snap.val().forEach(value => {
+                    emoteMode.push(value)
+                });
+                firebase.delete('/cache/emoteChannels');
+            }
+            botStatus = "STARTED";
+        })
+        .catch(err => console.log(err));
+
 });
 
 bot.on('message', async msg => {
     if(msg.author.bot)return;
+    if(emoteMode.length >= 1){
+        emoteMode.forEach(id => {
+            if(id === msg.channel.id){
+                const text = msg.content.replace(/:[^:\s]+:|<:[^:\s]+:[0-9]+>|<a:[^:\s]+:[0-9]+>/g, '').replace(/\s+/g, '');
+                function isEmojiOnly(text) {
+                    const textOnly = text.replace(/\s/g, "");
+                    return textOnly.replace(emojiRegex(), "") === "";
+                }
+                if(text){
+                    if (isEmojiOnly(msg.content));
+                    else{
+                        msg.delete()
+                            .catch(console.error);
+                    }
+                }
+            }
+        });
+    }
 
     if (!talkedRecently.has(msg.author.id)) {
         firebase.updateXP(msg.author.id);
@@ -190,15 +223,19 @@ function closeBot() {
     // firebase.cacheMap(musicQueue, 'musicQueue')
     //    .catch(err => console.log(err));
 
-    firebase.cacheMap(tempChannels, 'tempChannels')
+    const tempchannels = firebase.cacheMap(tempChannels, 'tempChannels')
+        .catch(err => console.log(err));
+    const emoteChannels = firebase.set('/cache/emoteChannels', emoteMode)
+        .catch(err => console.log(err));
+
+    Promise.all([tempchannels, emoteChannels])
         .then(() => {
             firebase.closeFirebase();
+            botStatus = "OFFLINE";
+            bot.destroy();
+            console.log('Finished closing app');
         })
         .catch(err => console.log(err));
-    //cache game
-    botStatus = "OFFLINE";
-    bot.destroy();
-    console.log('Finished closing app');
 }
 
 //(node:7104) DeprecationWarning: Guild#createChannel: Create channels with an options object instead of separate parameters
