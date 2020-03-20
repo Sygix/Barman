@@ -14,6 +14,7 @@
   "dependencies": {
     "cleverbot.io": "^1.0.4",
     "discord.js": "^11.5.1",
+    "emoji-regex": "^8.0.0",
     "enmap": "^5.2.3",
     "firebase-admin": "^8.8.0",
     "node-opus": "^0.3.3",
