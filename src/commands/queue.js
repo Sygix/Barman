@@ -4,7 +4,7 @@ module.exports = {
     name: 'queue',
     description: "See what music is up next in",
     aliases: ['upnext'],
-    exemple: '',
+    exemple: '[2]',
     cooldown: 3,
     args: false,
     guildOnly: true,
