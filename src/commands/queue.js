@@ -14,10 +14,16 @@ module.exports = {
     execute(msg, args) {
         let serverQueue = queue.get(msg.guild.id);
         if (!serverQueue) return msg.channel.send("Il n'y a pas de file d'attente !");
+        var page = 1;
+        if(!isNaN(args) && args > 1){
+            if(serverQueue.songs.length/5 < args){
+                page = (args*serverQueue.songs.length)/(serverQueue.songs.length/5)-5;
+            }
+        }
 
         var queuetext = "il n'y a pas de musique en attente.";
-        for (i = 1; i < serverQueue.songs.length; i++){
-            if(i > 5) break;
+        for (i = page; i < serverQueue.songs.length; i++){
+            if(i > page+5) break;
             let song = serverQueue.songs[i];
             if(i === 1){
                 queuetext = "``"+i+" -`` ["+song.title+"]("+song.url+") | Durée : ``"+song.length+"`` | Demandé par : ``"+song.author+"``\n";

@@ -23,7 +23,7 @@ module.exports = {
         if (!voiceChannel) return msg.channel.send('Vous devez être dans un canal vocal pour jouer de la musique !');
         const permissions = voiceChannel.permissionsFor(msg.client.user);
         if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-            return msg.channel.send("J'ai besoin des permissions de rejoindre et de parler dans ce cannal.");
+            return msg.channel.send("J'ai besoin des permissions de rejoindre et de parler dans ce canal.");
         }
 
         let validatePl = await ytpl.validateURL(args[0]);
