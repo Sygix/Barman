@@ -5,7 +5,7 @@ module.exports = {
     description: "See what music is up next in",
     aliases: ['upnext'],
     exemple: '',
-    cooldown: 5,
+    cooldown: 3,
     args: false,
     guildOnly: true,
     hidden: false,
@@ -15,17 +15,18 @@ module.exports = {
         let serverQueue = queue.get(msg.guild.id);
         if (!serverQueue) return msg.channel.send("Il n'y a pas de file d'attente !");
         var page = 1;
-        if(!isNaN(args) && args > 1){
-            if(serverQueue.songs.length/5 < args){
-                page = (args*serverQueue.songs.length)/(serverQueue.songs.length/5)-5;
+        if(!isNaN(args[0]) && args[0] > 1){
+            if(Math.ceil(serverQueue.songs.length/5) >= args[0]){
+                page = Math.ceil((args[0]*serverQueue.songs.length)/(serverQueue.songs.length/5))-4;
             }
         }
+        console.log(page);
 
         var queuetext = "il n'y a pas de musique en attente.";
         for (i = page; i < serverQueue.songs.length; i++){
-            if(i > page+5) break;
+            if(i > page+4) break;
             let song = serverQueue.songs[i];
-            if(i === 1){
+            if(i === page){
                 queuetext = "``"+i+" -`` ["+song.title+"]("+song.url+") | Durée : ``"+song.length+"`` | Demandé par : ``"+song.author+"``\n";
             }else{
                 queuetext += "``"+i+" -`` ["+song.title+"]("+song.url+") | Durée : ``"+song.length+"`` | Demandé par : ``"+song.author+"``\n";
