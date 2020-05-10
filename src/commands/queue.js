@@ -2,14 +2,14 @@ const queue = musicQueue;
 
 module.exports = {
     name: 'queue',
-    description: "See what music is up next in",
+    description: "Voir les musiques qui arrivent.",
     aliases: ['upnext'],
-    exemple: '',
+    exemple: '[2]',
     cooldown: 3,
     args: false,
     guildOnly: true,
     hidden: false,
-    category: 'music',
+    category: 'Musique',
     active: true,
     execute(msg, args) {
         let serverQueue = queue.get(msg.guild.id);
@@ -20,7 +20,6 @@ module.exports = {
                 page = Math.ceil((args[0]*serverQueue.songs.length)/(serverQueue.songs.length/5))-4;
             }
         }
-        console.log(page);
 
         var queuetext = "il n'y a pas de musique en attente.";
         for (i = page; i < serverQueue.songs.length; i++){

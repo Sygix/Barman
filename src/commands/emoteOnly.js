@@ -1,6 +1,6 @@
 module.exports = {
     name: 'emoteonly',
-    description: 'Switch a channel to emotes only mode',
+    description: 'Convertir un channel en mode emotes seulement.',
     aliases: ['eonly', 'eo', 'emotesonly'],
     usage: '',
     exemple: '',

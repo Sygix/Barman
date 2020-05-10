@@ -6,14 +6,14 @@ const queue = musicQueue;
 
 module.exports = {
     name: 'music',
-    description: 'play music into a voice channel',
+    description: 'Jouer de la musique.',
     aliases: ['musique', 'm', 'play', 'p'],
     exemple: 'YT music name/link/playlist link [number of the playlist songs you want]',
     cooldown: 0,
     args: true,
     guildOnly: true,
     hidden: false,
-    category: 'music',
+    category: 'Musique',
     active: true,
     async execute(msg, args) {
         //Get guild queue

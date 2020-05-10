@@ -9,6 +9,7 @@ module.exports = {
     exemple: 'Bonjour comment ça va ?',
     usage: '(message)',
     guildOnly: true,
+    category: 'Utilitaires',
     async execute(msg, args) {
         const cleverBot = new cleverbot('8sKTrhlp8UIjAS4H', process.env.CleverKEY); //process.env.CleverKEY
         var text = '';

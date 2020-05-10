@@ -3,6 +3,7 @@ module.exports = {
     description: 'Ping!',
     active: true,
     cooldown: 10,
+    category: 'Informations',
     async execute(msg, args) {
         const message = await msg.channel.send(`:ping_pong: Pinging....`);
 

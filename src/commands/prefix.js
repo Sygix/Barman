@@ -2,14 +2,14 @@ const firebase = require('../functions/firebase');
 
 module.exports = {
     name: 'prefix',
-    description: 'Set or read bot prefix for this guild',
+    description: 'Définir le préfix du bot sur ce serveur.',
     aliases: [],
     exemple: '[set] ($)',
     cooldown: 15,
     args: false,
     guildOnly: true,
     hidden: false,
-    category: 'settings',
+    category: 'Parametres',
     active: true,
     execute(msg, args) {
         if(typeof args[0] !== "undefined" && args[0].toLowerCase() === 'set'){

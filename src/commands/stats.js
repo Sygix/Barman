@@ -7,6 +7,7 @@ module.exports = {
     aliases: ['uptime', 'statistics', 'statistique', 'statistiques'],
     active: true,
     cooldown: 10,
+    category: 'Informations',
     execute(msg, args) {
         msg.channel.send(
             {

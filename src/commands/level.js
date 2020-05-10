@@ -2,7 +2,7 @@ const firebase = require('../functions/firebase');
 
 module.exports = {
     name: 'level',
-    description: 'Get your cross servers level',
+    description: 'Ton niveau sur tous les serveurs ou le bot est présent.',
     aliases: ['xp', 'lvl', 'px'],
     usage: '[@user]',
     exemple: '@Sygix#3290',
@@ -10,7 +10,7 @@ module.exports = {
     args: false,
     guildOnly: false,
     hidden: false,
-    category: 'Level',
+    category: 'Informations',
     active: true,
     async execute(msg, args) {
         firebase.getLevelFromFirebase(msg.author.id, (snap) => {
