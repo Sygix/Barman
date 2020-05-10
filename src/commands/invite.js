@@ -4,6 +4,7 @@ module.exports = {
     active: true,
     guildOnly: true,
     cooldown: 10,
+    category: 'Informations',
     execute(msg, args) {
         msg.member.createDM()
             .then(function (dm) {

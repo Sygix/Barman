@@ -2,14 +2,14 @@ const queue = musicQueue;
 
 module.exports = {
     name: 'queue',
-    description: "See what music is up next in",
+    description: "Voir les musiques qui arrivent.",
     aliases: ['upnext'],
     exemple: '[2]',
     cooldown: 3,
     args: false,
     guildOnly: true,
     hidden: false,
-    category: 'music',
+    category: 'Musique',
     active: true,
     execute(msg, args) {
         let serverQueue = queue.get(msg.guild.id);

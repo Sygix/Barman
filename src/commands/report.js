@@ -1,6 +1,6 @@
 module.exports = {
     name: 'report',
-    description: 'report an error or something that is not working to the bot devs',
+    description: 'Rapporter un problème aux développeurs.',
     aliases: ['feedback'],
     usage: '(error code/error description)',
     exemple: 'report music bot stopped playing music when asked to skip',
@@ -8,7 +8,7 @@ module.exports = {
     args: true,
     guildOnly: false,
     hidden: false,
-    category: 'tools',
+    category: 'Utilitaires',
     active: true,
     execute(msg, args) {
         var text = '';

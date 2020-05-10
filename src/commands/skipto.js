@@ -2,14 +2,14 @@ const queue = musicQueue;
 
 module.exports = {
     name: 'skipto',
-    description: 'Skip to a specific music number',
+    description: "Passe à une musique dans la file d'attente",
     aliases: ['sto'],
     exemple: '',
     cooldown: 0,
     args: true,
     guildOnly: true,
     hidden: false,
-    category: 'music',
+    category: 'Musique',
     active: true,
     async execute(msg, args) {
         let serverQueue = queue.get(msg.guild.id);

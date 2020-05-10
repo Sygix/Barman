@@ -8,6 +8,7 @@ module.exports = {
     exemple: '@Sygix',
     active: true,
     guildOnly: true,
+    category: 'Jeux',
     async execute(msg, args) {
         if(args.length < 1){
             var morpion = new morpionGame(msg, msg.member);

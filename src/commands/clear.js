@@ -7,6 +7,7 @@ module.exports = {
     exemple: '99',
     usage: '(1-999)',
     guildOnly: true,
+    category: 'Moderation',
     async execute(msg, args) {
         if(msg.member.hasPermission('MANAGE_MESSAGES') || msg.member.hasPermission('ADMINISTRATOR')){
             // This command removes all messages from all users in the channel, up to 500.

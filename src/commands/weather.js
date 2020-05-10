@@ -10,7 +10,7 @@ module.exports = {
     args: true,
     guildOnly: false,
     hidden: false,
-    category: 'Info',
+    category: 'Informations',
     active: true,
     execute(msg, args) {
         let apiKey = process.env.WeatherKEY;

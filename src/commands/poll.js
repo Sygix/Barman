@@ -8,7 +8,7 @@ module.exports = {
     args: true,
     guildOnly: true,
     hidden: false,
-    category: 'Utilities',
+    category: 'Utilitaires',
     active: true,
     execute(msg, args) {
         var collectedA = new Array(); // Message

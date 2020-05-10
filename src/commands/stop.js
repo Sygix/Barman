@@ -2,14 +2,14 @@ const queue = musicQueue;
 
 module.exports = {
     name: 'stop',
-    description: 'Stop playing music',
+    description: 'Arrêter la lecture de musique.',
     aliases: ['leave'],
     exemple: '',
     cooldown: 0,
     args: false,
     guildOnly: true,
     hidden: false,
-    category: 'music',
+    category: 'Musique',
     active: true,
     async execute(msg, args) {
         let serverQueue = queue.get(msg.guild.id);

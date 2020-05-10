@@ -2,20 +2,57 @@ const { prefix } = require('../../config.json');
 
 module.exports = {
     name: 'help',
-    description: 'Liste de toutes les commandes ou infos à propos d\'une commande particulère.',
+    description: 'Liste de toutes les commandes ou infos à propos d\'une commande.',
     aliases: ['commands', 'aide', 'command'],
     usage: '[command]',
     exemple: 'weather',
     active: true,
     cooldown: 5,
+    category: 'Informations',
     execute(msg, args) {
 
         const data = [];
         const { commands } = msg.client;
 
         if (!args.length) {
-            data.push('Liste des commandes disponible :');
-            data.push('\`\`\`Markdown\n');
+            let embedMessage = {
+                embed: {
+                    "title": ":books: Aide sur les commandes :books:",
+                    "description": "Informations détaillées pour chaque commande avec `@Barman aide commande`\n" +
+                    "[Besoin d'un peu plus d'aide ? Rejoignez le discord en cliquant sur ce texte !](https://discord.gg/zgMKGT4)",
+                    "url": "https://discordapp.com/oauth2/authorize?client_id=417683933891919882&permissions=1610083447&scope=bot",
+                    "color": 12390624,
+                    "fields": []
+                }
+            };
+            commands.map(command => {
+                if(!command.hidden){
+                    if(typeof command.category === 'undefined'){
+                        command.category = 'Autre';
+                    }
+                    if(embedMessage.embed.fields.length <= 0){
+                        embedMessage.embed.fields.push({
+                            "name": command.category,
+                            "value": "`"+command.name+"` | *"+command.description+"*\n"
+                        });
+                    }else{
+                        for(i = 0; i < embedMessage.embed.fields.length; i++){
+                            let element = embedMessage.embed.fields[i];
+                            if(element.name === command.category && !element.value.includes(command.name)){
+                                element.value = element.value + "`"+command.name+"` | *"+command.description+"*\n";
+                                return;
+                            }
+                        }
+                        embedMessage.embed.fields.push({
+                            "name": command.category,
+                            "value": "`"+command.name+"` | *"+command.description+"*\n"
+                        });
+                    }
+                }
+            });
+
+            return msg.channel.send(embedMessage);
+            /*
             commands.map(command => {
                 if(!command.hidden) data.push('    - '+command.name);
             });
@@ -24,6 +61,7 @@ module.exports = {
                 "() = champ obligatoire | [] = champ optionnel | Bot by Sygix#3290");
 
             return msg.channel.send(data, { split: true });
+            */
         }
 
         const name = args[0].toLowerCase();

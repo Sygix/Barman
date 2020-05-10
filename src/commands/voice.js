@@ -9,6 +9,7 @@ module.exports = {
     usage: '(0-99) [public / @user @user]',
     exemple: '99 @Sygix @Solarus',
     guildOnly: true,
+    category: 'Utilitaires',
     execute(msg, args) {
         if(!msg.guild.channels.find('name', 'Temporaire') || !msg.guild.channels.find('name', 'Rejoindre pour créer')){
             msg.channel.send("Les channels temporaire n'ont pas encore été mis en place sur ce discord.");
