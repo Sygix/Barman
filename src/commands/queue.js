@@ -20,7 +20,6 @@ module.exports = {
                 page = Math.ceil((args[0]*serverQueue.songs.length)/(serverQueue.songs.length/5))-4;
             }
         }
-        console.log(page);
 
         var queuetext = "il n'y a pas de musique en attente.";
         for (i = page; i < serverQueue.songs.length; i++){
