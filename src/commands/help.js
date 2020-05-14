@@ -39,7 +39,7 @@ module.exports = {
                         for(i = 0; i < embedMessage.embed.fields.length; i++){
                             let element = embedMessage.embed.fields[i];
                             if(element.name === command.category && !element.value.includes(command.name)){
-                                element.value = element.value + "`"+command.name+"` | *"+command.description+"*\n";
+                                element.value += "`"+command.name+"` | *"+command.description+"*\n";
                                 return;
                             }
                         }

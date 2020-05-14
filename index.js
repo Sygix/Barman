@@ -24,7 +24,9 @@ for (const file of commandFiles) {
 }
 
 bot.on('ready', function () { //Lancement des functions lors du démarrage
-    bot.user.setActivity('Stay safe | @Barman help');
+    bot.user.setActivity('@Barman help', { type: 'WATCHING' })
+        .then(presence => console.log(`Activity set to ${presence.activities[0].name}`))
+        .catch(console.error);
     firebase.connectFirebase();
     firebase.updateServers()
         .catch(error => console.log(error));
@@ -240,6 +242,3 @@ function closeBot() {
         })
         .catch(err => console.log(err));
 }
-
-//(node:7104) DeprecationWarning: Guild#createChannel: Create channels with an options object instead of separate parameters
-//(node:7104) DeprecationWarning: Collection#find: pass a function instead
