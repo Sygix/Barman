@@ -18,7 +18,7 @@ module.exports = {
             let embedMessage = {
                 embed: {
                     "title": ":books: Aide sur les commandes :books:",
-                    "description": "Informations détaillées pour chaque commande avec `@Barman aide commande`\n" +
+                    "description": "Informations détaillées pour chaque commande avec `@Barman help commande`\n" +
                     "[Besoin d'un peu plus d'aide ? Rejoignez le discord en cliquant sur ce texte !](https://discord.gg/zgMKGT4)",
                     "url": "https://discordapp.com/oauth2/authorize?client_id=417683933891919882&permissions=1610083447&scope=bot",
                     "color": 12390624,
@@ -39,7 +39,7 @@ module.exports = {
                         for(i = 0; i < embedMessage.embed.fields.length; i++){
                             let element = embedMessage.embed.fields[i];
                             if(element.name === command.category && !element.value.includes(command.name)){
-                                element.value = element.value + "`"+command.name+"` | *"+command.description+"*\n";
+                                element.value += "`"+command.name+"` | *"+command.description+"*\n";
                                 return;
                             }
                         }
@@ -52,16 +52,6 @@ module.exports = {
             });
 
             return msg.channel.send(embedMessage);
-            /*
-            commands.map(command => {
-                if(!command.hidden) data.push('    - '+command.name);
-            });
-            data.push(`\n\`\`\`Vous pouvez écrire ${prefix}\`help [command name]\` pour avoir plus d'infos sur une commande particulière !\n`);
-            data.push("Informations complémentaire et aide disponible sur ce discord : https://sygix.fr/discord \n" +
-                "() = champ obligatoire | [] = champ optionnel | Bot by Sygix#3290");
-
-            return msg.channel.send(data, { split: true });
-            */
         }
 
         const name = args[0].toLowerCase();
