@@ -29,7 +29,7 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
     firebase.updateServers()
         .catch(error => console.log(error));
     prefixes.push(`<@!${bot.user.id}> `, `<@${bot.user.id}> `); //add Mentions to prefixes
-    const tempChannels = firebase.get('/cache/tempChannels')
+    const ttempChannels = firebase.get('/cache/tempChannels')
         .then(snap => {
             if(snap.val() !== null){
                 Object.keys(snap.val()).forEach(k => { //WILL NEED TO CHECK IF USER LEFT VOICE WHILE OFFLINE
@@ -51,7 +51,7 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
         })
         .catch(err => console.log(err));
 
-    Promise.all([tempChannels, emoteChannels])
+    Promise.all([ttempChannels, emoteChannels])
         .then(() => {
             console.log('Bot is Ready!');
             botStatus = "STARTED";

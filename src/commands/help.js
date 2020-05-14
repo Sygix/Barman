@@ -18,7 +18,7 @@ module.exports = {
             let embedMessage = {
                 embed: {
                     "title": ":books: Aide sur les commandes :books:",
-                    "description": "Informations détaillées pour chaque commande avec `@Barman aide commande`\n" +
+                    "description": "Informations détaillées pour chaque commande avec `@Barman help commande`\n" +
                     "[Besoin d'un peu plus d'aide ? Rejoignez le discord en cliquant sur ce texte !](https://discord.gg/zgMKGT4)",
                     "url": "https://discordapp.com/oauth2/authorize?client_id=417683933891919882&permissions=1610083447&scope=bot",
                     "color": 12390624,
