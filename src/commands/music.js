@@ -109,12 +109,12 @@ module.exports = {
         async function getSongInfo(musicLink){
             //Get song infos
             const songInfo = await ytdl.getInfo(musicLink);
-            if(songInfo.length_seconds > 1800) return msg.channel.send("La durée maximale par musique est de 30 minutes. :stopwatch:");
+            if(songInfo.videoDetails.lengthSeconds > 1800) return msg.channel.send("La durée maximale par musique est de 30 minutes. :stopwatch:");
             const song = {
-                title: songInfo.title,
-                url: songInfo.video_url,
+                title: songInfo.videoDetails.title,
+                url: songInfo.videoDetails.video_url,
                 thumbnail: songInfo.player_response.videoDetails.thumbnail.thumbnails[songInfo.player_response.videoDetails.thumbnail.thumbnails.length - 1].url,
-                length: msToTime(songInfo.length_seconds*1000),
+                length: msToTime(songInfo.videoDetails.lengthSeconds*1000),
                 author: msg.author.username,
             };
 
