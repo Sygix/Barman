@@ -34,8 +34,15 @@ module.exports = {
                 for(let i = 0; i < args.length; i++){
                     search += args[i] + " ";
                 }
-                ytsr(search, {limit: 1})
-                    .then( (result) => getSongInfo(result.items[0].link))
+                ytsr(search, {limit: 10})
+                    .then( (result) => {
+                        for(i = 0; i < result.items.length; i++){
+                            if(result.items[i].type === "video"){
+                                getSongInfo(result.items[i].link);
+                                break;
+                            }
+                        }
+                    })
                     .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
             }else{
                 getSongInfo(args[0]);
@@ -47,8 +54,15 @@ module.exports = {
                         addPlaylist(result.items);
                     })
                     .catch( () => {
-                        ytsr(args[0], {limit: 1})
-                            .then( (result) => getSongInfo(result.items[0].link))
+                        ytsr(search, {limit: 10})
+                            .then( (result) => {
+                                for(i = 0; i < result.items.length; i++){
+                                    if(result.items[i].type === "video"){
+                                        getSongInfo(result.items[i].link);
+                                        break;
+                                    }
+                                }
+                            })
                             .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
                     });
             }else{
@@ -57,8 +71,15 @@ module.exports = {
                         addPlaylist(result.items);
                     })
                     .catch( () => {
-                        ytsr(args[0], {limit: 1})
-                            .then( (result) => getSongInfo(result.items[0].link))
+                        ytsr(search, {limit: 10})
+                            .then( (result) => {
+                                for(i = 0; i < result.items.length; i++){
+                                    if(result.items[i].type === "video"){
+                                        getSongInfo(result.items[i].link);
+                                        break;
+                                    }
+                                }
+                            })
                             .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
                     });
             }
