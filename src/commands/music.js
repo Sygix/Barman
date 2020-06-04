@@ -146,6 +146,8 @@ module.exports = {
                     connection: null,
                     songs: [],
                     playing: true,
+                    playingMessage: null,
+                    pauseTimeout: null,
                 };
 
                 queue.set(msg.guild.id, queueContruct);
@@ -188,7 +190,8 @@ module.exports = {
                         }
                     }
                 }
-            );
+            )
+            .then((message) => serverQueue.playingMessage = message);
             serverQueue.connection.playStream(ytdl(song.url, {filter: 'audioonly'}), { seek: 0, volume: 0.7, bitrate: 96000})//Volume 0.7 for better quality at 100% on discord
                 .on('end', () => {
                     serverQueue.songs.shift();
