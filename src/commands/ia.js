@@ -5,7 +5,7 @@ module.exports = {
     aliases: ['ai'],
     description: 'Parle avec une intelligence artificielle.',
     args: true,
-    active: true,
+    active: false,
     exemple: 'Bonjour comment ça va ?',
     usage: '(message)',
     guildOnly: true,
