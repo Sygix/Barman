@@ -37,7 +37,6 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
                 Object.keys(snap.val()).forEach(k => { //WILL NEED TO CHECK IF USER LEFT VOICE WHILE OFFLINE
                     tempChannels.set(k, snap.val()[k]);
                 });
-                firebase.delete('/cache/tempChannels');
             }
         })
         .catch(err => console.log(err));
@@ -48,13 +47,13 @@ bot.on('ready', function () { //Lancement des functions lors du démarrage
                 snap.val().forEach(value => {
                     emoteMode.push(value)
                 });
-                firebase.delete('/cache/emoteChannels');
             }
         })
         .catch(err => console.log(err));
 
     Promise.all([ttempChannels, emoteChannels])
         .then(() => {
+            firebase.delete('/cache/');
             console.log('Bot is Ready!');
             botStatus = "STARTED";
         });
