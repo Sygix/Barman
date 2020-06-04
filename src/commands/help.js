@@ -1,4 +1,4 @@
-const { prefix } = require('../../config.json');
+const { prefixes } = require('../../config.json');
 
 module.exports = {
     name: 'help',
@@ -65,8 +65,8 @@ module.exports = {
 
         if (command.aliases) data.push(`**Alias:** ${command.aliases.join(', ')}`);
         if (command.description) data.push(`**Description:** ${command.description}`);
-        if (command.usage) data.push(`**Utilisation:** ${prefix}${command.name} ${command.usage}`);
-        if (command.exemple) data.push(`**Exemple:** ${prefix}${command.name} ${command.exemple}`);
+        if (command.usage) data.push(`**Utilisation:** ${prefixes[0]}${command.name} ${command.usage}`);
+        if (command.exemple) data.push(`**Exemple:** ${prefixes[0]}${command.name} ${command.exemple}`);
         if (command.cooldown) data.push(`**Cooldown:** ${command.cooldown} seconde(s)`);
         if (command.category) data.push(`**Catégorie:** ${command.category}`);
 

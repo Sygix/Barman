@@ -36,7 +36,7 @@ module.exports = {
         let waiting = serverQueue.songs.length-1;
         msg.channel.send({
                 embed: {
-                    "title": "Joue Maintenant :musical_note:",
+                    "title": serverQueue.playing ? "Joue Maintenant :musical_note:" : "Maintenant en Pause :pause_button:",
                     "description": "["+song.title+"]("+song.url+")\n\nDurée : ``"+song.length+"`` \n\nDemandé par : ``"+song.author+"``",
                     "url": "https://discordapp.com/oauth2/authorize?client_id=417683933891919882&permissions=1610083447&scope=bot",
                     "color": 16711708,

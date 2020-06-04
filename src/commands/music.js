@@ -34,8 +34,15 @@ module.exports = {
                 for(let i = 0; i < args.length; i++){
                     search += args[i] + " ";
                 }
-                ytsr(search, {limit: 1})
-                    .then( (result) => getSongInfo(result.items[0].link))
+                ytsr(search, {limit: 10})
+                    .then( (result) => {
+                        for(i = 0; i < result.items.length; i++){
+                            if(result.items[i].type === "video"){
+                                getSongInfo(result.items[i].link);
+                                break;
+                            }
+                        }
+                    })
                     .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
             }else{
                 getSongInfo(args[0]);
@@ -47,8 +54,15 @@ module.exports = {
                         addPlaylist(result.items);
                     })
                     .catch( () => {
-                        ytsr(args[0], {limit: 1})
-                            .then( (result) => getSongInfo(result.items[0].link))
+                        ytsr(search, {limit: 10})
+                            .then( (result) => {
+                                for(i = 0; i < result.items.length; i++){
+                                    if(result.items[i].type === "video"){
+                                        getSongInfo(result.items[i].link);
+                                        break;
+                                    }
+                                }
+                            })
                             .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
                     });
             }else{
@@ -57,8 +71,15 @@ module.exports = {
                         addPlaylist(result.items);
                     })
                     .catch( () => {
-                        ytsr(args[0], {limit: 1})
-                            .then( (result) => getSongInfo(result.items[0].link))
+                        ytsr(search, {limit: 10})
+                            .then( (result) => {
+                                for(i = 0; i < result.items.length; i++){
+                                    if(result.items[i].type === "video"){
+                                        getSongInfo(result.items[i].link);
+                                        break;
+                                    }
+                                }
+                            })
                             .catch( (err) => msg.channel.send("Whoops, je n'ai rien trouvé pour vous !"));
                     });
             }
@@ -125,6 +146,8 @@ module.exports = {
                     connection: null,
                     songs: [],
                     playing: true,
+                    playingMessage: null,
+                    pauseTimeout: null,
                 };
 
                 queue.set(msg.guild.id, queueContruct);
@@ -167,7 +190,8 @@ module.exports = {
                         }
                     }
                 }
-            );
+            )
+            .then((message) => serverQueue.playingMessage = message);
             serverQueue.connection.playStream(ytdl(song.url, {filter: 'audioonly'}), { seek: 0, volume: 0.7, bitrate: 96000})//Volume 0.7 for better quality at 100% on discord
                 .on('end', () => {
                     serverQueue.songs.shift();
