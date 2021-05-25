@@ -21,13 +21,12 @@ module.exports = {
         var db = admin.database();
         var ref = db.ref("servers");
         return new Promise(function(reject) {
-                bot.guilds.array().forEach(server => {
+                bot.guilds.cache.each(server => {
                     var serverID = ref.child(server.id);
                     serverID.update({
                         name: server.name,
                         ownerID: server.ownerID,
-                        ownerTag: server.owner.user.tag,
-                        channels: server.channels.array().length,
+                        channels: server.channels.cache.size,
                         memberCount: server.memberCount
                     }, function(error) {
                         if (error) {
@@ -79,7 +78,7 @@ module.exports = {
         var db = admin.database();
         return db.ref('/servers/' + serverID).once('value');
     },
-    
+
     cacheMap: function (map, collection) {
         var db = admin.database();
         var ref = db.ref('/cache/'+collection);
